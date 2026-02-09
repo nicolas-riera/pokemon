@@ -1,12 +1,15 @@
 import pygame
 
+from src.menu import Menu
+
 class PygameApp:
     def __init__(self, w, h):
         pygame.init()
         self.screen = pygame.display.set_mode((w, h))
         self.clock = pygame.time.Clock()
         self.running = True
-        self.state = ""
+        self.state = "menu"
+        self.menu = Menu()
 
 
     def events(self):
@@ -28,6 +31,8 @@ class PygameApp:
 
     def draw(self):
         self.screen.fill("white")
+        if self.state == "menu":
+            self.menu.menu_rendering(self.screen)
         pygame.display.flip()
         self.clock.tick(60) 
 
