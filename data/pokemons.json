@@ -1,0 +1,19 @@
+{
+    "Pikachu":
+    {
+        "name": "Pikachu",
+        "images":
+        {
+            "front1": "path",
+            "front2": "path",
+            "front3": "path",
+            "back1": "path",
+            "back2": "path",
+            "back3": "path"
+        },
+        "type": "electric",
+        "attack": 8,
+        "defense": 1,
+        "hp": 50
+    }
+}
