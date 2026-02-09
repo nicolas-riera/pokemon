@@ -9,7 +9,8 @@
             "front3": "path",
             "back1": "path",
             "back2": "path",
-            "back3": "path"
+            "back3": "path",
+            "icon" : "path"
         },
         "type": "electric",
         "attack": 8,
