@@ -37,7 +37,7 @@ class PygameApp:
     def draw(self):
         self.screen.fill("white")
         if self.state == "menu":
-            self.menu.menu_rendering(self.screen)
+            self.menu.menu_rendering(self.screen, self.font)
         pygame.display.flip()
         self.clock.tick(60) 
 
