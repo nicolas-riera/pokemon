@@ -18,6 +18,7 @@ class PygameApp:
 
 
     def events(self):
+
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
@@ -31,8 +32,8 @@ class PygameApp:
             if event.type == pygame.KEYDOWN:
                 if pygame.key.get_pressed()[pygame.K_ESCAPE]:
                     self.escpressed = True 
-                else:
-                    self.escpressed = False
+            else:
+                self.escpressed = False
 
     def draw(self):
         self.screen.fill("white")
@@ -41,7 +42,12 @@ class PygameApp:
         pygame.display.flip()
         self.clock.tick(60) 
 
+    def logic(self):
+        if self.state == "menu":
+            self.menu.menu_logic(self.escpressed, self.mouseclicked)
+
     def loop(self):
         while self.running:
             self.events()
             self.draw()
+            self.logic()
