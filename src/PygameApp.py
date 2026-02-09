@@ -1,13 +1,18 @@
 import pygame
+import os
 
 from src.menu import Menu
 
 class PygameApp:
     def __init__(self, w, h):
         pygame.init()
+        pygame.display.set_caption("Pokémon")
+        # pygame.display.set_icon(pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__), "..", "assets", "img", "logo.png")))
+
         self.screen = pygame.display.set_mode((w, h))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
         self.state = "menu"
         self.menu = Menu()
 
