@@ -8,3 +8,4 @@ class Menu:
 
     def menu_rendering(self, screen):
         screen.blit(LOGO_TITLE_SCALED, LOGO_TITLE_RECT)
+        
