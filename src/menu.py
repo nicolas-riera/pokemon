@@ -33,7 +33,7 @@ class Menu:
             screen.blit(CURSOR, (210, 570))
 
 
-    def menu_logic(self, escpressed, mouseclicked):
+    def menu_logic(self, escpressed, mouseclicked, state):
 
         if escpressed:
             pygame.quit()
@@ -41,14 +41,17 @@ class Menu:
         
         elif self.__play_button.collidepoint(pygame.mouse.get_pos()) or self.__add_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
             if mouseclicked:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                 if self.__play_button.collidepoint(pygame.mouse.get_pos()):
-                    print("play")
+                    state = "game"
                 elif self.__add_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                    print("add pokemon")
+                    state = "add_pokemon"
                 else:
-                    print("pokedex")
+                    state = "pokedex"
             else:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+        return state
         

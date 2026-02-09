@@ -44,7 +44,7 @@ class PygameApp:
 
     def logic(self):
         if self.state == "menu":
-            self.menu.menu_logic(self.escpressed, self.mouseclicked)
+            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
 
     def loop(self):
         while self.running:
