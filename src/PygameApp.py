@@ -52,11 +52,10 @@ class PygameApp:
     def load_pokemons(pokemon_names):
         pokemon_objects = []
         with open('./data/pokemon.json', 'r') as file:
+        # base_dir = os.path.dirname(os.path.abspath(__file__))
+        # json_path = os.path.join(base_dir, "..", "data", "pokemon.json")
+        # with open(json_path, 'r') as file:
             pokemon_data = json.load(file) # open our JSON containing pokemons
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(base_dir, "..", "data", "pokemon.json")
-        with open(json_path, 'r', encoding='utf-8') as file:
-            pokemon_data = json.load(file)
         for name in pokemon_names:
             for id, data in pokemon_data.items():
                 if data["name"] == name:
