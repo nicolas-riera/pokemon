@@ -8,3 +8,6 @@ class Pokemon:
     
     def load(self, file):
         pass
+
+    def __repr__(self): #special method for debbugin purpose return our pokemon list as a string and format that list
+        return f"{{'name': '{self.name}', 'types': {self.types}, 'attack': {self.attack}, 'defense': {self.defense}, 'hp': {self.hp}}}"
