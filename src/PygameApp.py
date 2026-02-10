@@ -13,12 +13,10 @@ class PygameApp:
         self.screen = pygame.display.set_mode((w, h))
         self.clock = pygame.time.Clock()
         self.running = True
-        self.pokemons = ["Duduo", "Seel"]
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
         self.state = "menu"
         self.menu = Menu()
-
 
     def events(self):
 
@@ -50,24 +48,27 @@ class PygameApp:
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
 
     def load(self):
-        with open('./data/pokemons.json', 'r') as file:
-            self.pokemon_data = json.load(file)
+        with open('./data/pokedex.json', 'r') as file:
+            self.pokedex_data = json.load(file)
         
-        for name in self.pokemons:
-            for id, data in self.pokemon_data.items():
-                if data["name"] == name:
-                    p = Pokemon(name)
-                    p.types = data["type"]
-                    p.attack = data["attack"]
-                    p.defense = data["defense"]
-                    p.hp = data["hp"]
-                    self.pokemon_objects.append(p)
-                    break
+        with open('./data/pokemon.json', 'r') as file:
+            self.pokemon_data = json.load(file)
+
+        for instance_key, instance_val in self.pokedex_data.items():
+            target_id = instance_val["id"]
+
+            if target_id in self.pokemon_data:
+                pokemon_info = self.pokemon_data[target_id]
+
+                p = Pokemon(pokemon_info["name"])
+                p.set_types(pokemon_info["type"])
+                p.set_attack(pokemon_info["attack"])
+                p.set_defense(pokemon_info["defense"])
+                p.set_hp(pokemon_info["hp"])
+                self.pokemon_objects.append(p)
 
     def loop(self):
         while self.running:
             self.events()
             self.draw()
             self.logic()
-
-            print(self.pokemon_objects[0].name)
