@@ -21,6 +21,8 @@ class PygameApp:
 
 
     def events(self):
+        self.escpressed = False
+        self.mouseclicked = False
 
         for event in pygame.event.get():
 
@@ -29,14 +31,10 @@ class PygameApp:
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouseclicked = True
-            else:
-                self.mouseclicked = False
 
             if event.type == pygame.KEYDOWN:
-                if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                if event.key == pygame.K_ESCAPE:
                     self.escpressed = True 
-            else:
-                self.escpressed = False
 
     def draw(self):
         self.screen.fill("white")
@@ -47,6 +45,10 @@ class PygameApp:
 
     def logic(self):
         if self.state == "menu":
+            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
+        elif self.state == "pokedex": #created a pokedex GAMESTATE 
+            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
+        elif self.state == "add_pokemon": #created a add_pokemon GAMESTATE
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
     @staticmethod #method dealing with the logic related to the class without accessing the clas
     def load_pokemons(pokemon_names):
