@@ -1,8 +1,8 @@
 import pygame
 import os
 import json
-from src.pokemon.Pokemon import Pokemon
 
+from src.pokemon.Pokemon import Pokemon
 from src.Menu import Menu
 
 class PygameApp:
