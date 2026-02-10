@@ -1,5 +1,7 @@
 import pygame
 import os
+import json
+from src.pokemon.Pokemon import Pokemon
 
 from src.menu import Menu
 
@@ -8,10 +10,11 @@ class PygameApp:
         pygame.init()
         pygame.display.set_caption("Pokémon")
         # pygame.display.set_icon(pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__), "..", "assets", "img", "logo.png")))
-
         self.screen = pygame.display.set_mode((w, h))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.pokemons = ["Duduo", "Seel"]
+        self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
         self.state = "menu"
         self.menu = Menu()
@@ -46,8 +49,25 @@ class PygameApp:
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
 
+    def load(self):
+        with open('./data/pokemons.json', 'r') as file:
+            self.pokemon_data = json.load(file)
+        
+        for name in self.pokemons:
+            for id, data in self.pokemon_data.items():
+                if data["name"] == name:
+                    p = Pokemon(name)
+                    p.types = data["type"]
+                    p.attack = data["attack"]
+                    p.defense = data["defense"]
+                    p.hp = data["hp"]
+                    self.pokemon_objects.append(p)
+                    break
+
     def loop(self):
         while self.running:
             self.events()
             self.draw()
             self.logic()
+
+            print(self.pokemon_objects[0].name)
