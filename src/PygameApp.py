@@ -5,6 +5,8 @@ from src.pokemon.Pokemon import Pokemon
 
 from src.Menu import Menu
 
+from src.pokemon import Pokedex
+
 class PygameApp:
     def __init__(self, w, h):
         pygame.init()
@@ -18,7 +20,6 @@ class PygameApp:
         self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
         self.state = "menu"
         self.menu = Menu()
-
 
     def events(self):
         self.escpressed = False
@@ -40,6 +41,8 @@ class PygameApp:
         self.screen.fill("white")
         if self.state == "menu":
             self.menu.menu_rendering(self.screen, self.font)
+        if self.state == "pokedex":
+            self.pokedex.pokedex_rendering(self.screen)
         pygame.display.flip()
         self.clock.tick(60) 
 

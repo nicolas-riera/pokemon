@@ -1,5 +1,6 @@
 import sys
 import os
+import pygame
 
 # Get the absolute path of the current file's directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,7 +11,8 @@ project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
 sys.path.append(project_root)
 
 
-from src.PygameApp import PygameApp
+from src.assets_loading import POKEDEX_BACKGROUND
+
 
 class Pokedex:
     def __init__(self, data_pokemon): 
@@ -29,10 +31,10 @@ class Pokedex:
         self.page_index = 0
         self.pokemons_per_page = 5 # amount of pokemon per page to be changed later
         print(f"DEBUG: {self.list_pokemon}")
-    def render_pokedex(self):
-        pass
+    @staticmethod
+    def pokedex_rendering(screen):
+        screen.blit(POKEDEX_BACKGROUND, (0, 0))
 
-
-if __name__ == "__main__":
-    printing = PygameApp.load_pokemons([]) #takes pokemon names as an argument and return pokemon data as a list
-    print(printing)
+# if __name__ == "__main__":
+#     printing = PygameApp.load_pokemons([]) #takes pokemon names as an argument and return pokemon data as a list
+#     print(printing)
