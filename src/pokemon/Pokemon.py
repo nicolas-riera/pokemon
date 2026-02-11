@@ -6,6 +6,7 @@ class Pokemon:
         self.__defense = None
         self.__hp = None
         self.__level = 1
+        self.__xp = 0
 
     def get_name(self):
         return self.__name
@@ -25,6 +26,9 @@ class Pokemon:
     def get_level(self):
         return self.__level
     
+    def get_xp(self):
+        return self.__xp
+    
     def set_name(self, name):
         self.__name = name
     
@@ -42,3 +46,6 @@ class Pokemon:
 
     def set_level(self, level):
         self.__level = level
+    
+    def set_xp(self, xp):
+        self.__xp = xp
