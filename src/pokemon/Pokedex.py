@@ -1,16 +1,9 @@
-import sys
 import os
 import pygame
 import json
 
 from src.assets_loading import POKEDEX_BACKGROUND, BASE_DIR, POKEMON_DATA
 from src.pokemon.Pokemon import Pokemon
-
-# Go up two levels to get the project root (The 'POKEMON' folder)
-# current_dir is ".../src/pokemon", parent is ".../src", grand-parent is ".../POKEMON"
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', '..'))
-# Add the root to sys.path
-sys.path.append(PROJECT_ROOT)
 
 class Pokedex:
     def __init__(self): 
