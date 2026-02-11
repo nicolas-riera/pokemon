@@ -35,29 +35,20 @@ class Menu:
 
     def menu_logic(self, escpressed, mouseclicked, state):
 
-        if state == "menu":
-            if escpressed: 
-                pygame.quit()
-                raise SystemExit
-            if self.__play_button.collidepoint(pygame.mouse.get_pos()) or self.__add_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
-                if mouseclicked:
-                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-                    if self.__play_button.collidepoint(pygame.mouse.get_pos()):
-                        state = "game"
-                    elif self.__add_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                        state = "add_pokemon"
-                    else:
-                        state = "pokedex"
-                else:
-                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
-            else:
+        if escpressed: 
+            pygame.quit()
+            raise SystemExit
+        if self.__play_button.collidepoint(pygame.mouse.get_pos()) or self.__add_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
+            if mouseclicked:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-        elif state == "pokedex":
-            if escpressed: 
-                state = "menu"
-        elif state == "add_pokemon":
-            if escpressed: 
-                state = "menu"
+                if self.__play_button.collidepoint(pygame.mouse.get_pos()):
+                    state = "game"
+                elif self.__add_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                    state = "add_pokemon"
+                else:
+                    state = "pokedex"
+            else:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 

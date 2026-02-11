@@ -3,8 +3,8 @@ import os
 import json
 
 from src.pokemon.Pokemon import Pokemon
+from src.pokemon.Pokedex import Pokedex
 from src.Menu import Menu
-from src.pokemon.Pokedex import Pokedex # import the module then the class
 
 class PygameApp:
     def __init__(self, w, h):
@@ -17,7 +17,6 @@ class PygameApp:
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
         self.state = "menu"
-        self.menu = Menu()
 
     def events(self):
         self.escpressed = False
@@ -38,7 +37,7 @@ class PygameApp:
     def draw(self):
         self.screen.fill("white")
         if self.state == "menu":
-            self.menu.menu_rendering(self.screen, self.font)
+            Menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
             Pokedex.pokedex_rendering(self.screen)
         pygame.display.flip()
@@ -46,7 +45,7 @@ class PygameApp:
 
     def logic(self):
         if self.state == "menu":
-            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
+            self.state = Menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
 
     def load(self):
         with open('./data/pokedex.json', 'r') as file:
