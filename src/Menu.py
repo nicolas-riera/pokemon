@@ -12,11 +12,11 @@ class Menu:
 
         screen.blit(LOGO_TITLE_SCALED, LOGO_TITLE_RECT)
 
-        play_button_text = font.render("Play", True, (0, 0, 0))
+        play_button_text = font[0].render("Play", True, (0, 0, 0))
         screen.blit(play_button_text, (355, 430))
-        enemy_pokemon_button_text = font.render("Enemy Pokemon", True, (0, 0, 0))
+        enemy_pokemon_button_text = font[0].render("Enemy Pokemon", True, (0, 0, 0))
         screen.blit(enemy_pokemon_button_text, (235, 500))
-        pokedex_button_text = font.render("Pokedex", True, (0, 0, 0))
+        pokedex_button_text = font[0].render("Pokedex", True, (0, 0, 0))
         screen.blit(pokedex_button_text, (307, 570))
 
         pygame.draw.line(screen, (0, 0, 0), (180, 400), (620, 400), width=5)

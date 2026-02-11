@@ -2,8 +2,10 @@ import os
 import pygame
 import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, BASE_DIR, POKEMON_DATA
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA
 from src.pokemon.Pokemon import Pokemon
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Pokedex:
     def __init__(self): 
@@ -19,11 +21,6 @@ class Pokedex:
         # we load the data when creating the class to not do it again
         self.load_json()
         self.load_pokedex_objects()
-        print(f"DEBUG: {self.list_pokemon}")
-
-    @staticmethod
-    def pokedex_rendering(screen):
-        screen.blit(POKEDEX_BACKGROUND, (0, 0))
 
     def load_json(self):
         with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'r') as file:
@@ -67,4 +64,16 @@ class Pokedex:
 
         self.write_json() # call function to dump new pokemon in json
         self.load_pokedex_objects() # actualize pokedex and clear 
-    
+
+    def draw_pokedex(self, screen, font):
+        screen.blit(POKEDEX_BACKGROUND, (0, 0))
+
+        beginning_page_index = self.page_index * self.pokemons_per_page # get the index of the first element and multiply it by the number of page to get the first item for example page two starts with the pokemon indexed at ten
+        ending_page_index = beginning_page_index + self.pokemons_per_page
+        pokemons_displayed = self.pokedex_objects [beginning_page_index:ending_page_index]
+        position_y = 50
+        for p in pokemons_displayed:
+            text = f"{p.get_name()}"
+            surface_text = font.render(text, True, (0, 0, 0)) 
+            screen.blit(surface_text, (50, position_y))
+            position_y += 50 # spacing between lines 

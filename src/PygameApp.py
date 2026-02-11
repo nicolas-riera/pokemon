@@ -15,9 +15,10 @@ class PygameApp:
         self.clock = pygame.time.Clock()
         self.running = True
         self.pokemon_objects = []
-        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
+        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
         self.menu = Menu()
+        self.pokedex = Pokedex()
 
     def events(self):
         self.escpressed = False
@@ -40,7 +41,7 @@ class PygameApp:
         if self.state == "menu":
             self.menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
-            Pokedex.pokedex_rendering(self.screen)
+            self.pokedex.draw_pokedex(self.screen, self.font[1])
         pygame.display.flip()
         self.clock.tick(60) 
 

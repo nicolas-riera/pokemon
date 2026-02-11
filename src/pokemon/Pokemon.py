@@ -1,5 +1,5 @@
 class Pokemon:
-    def __init__(self, name:str):
+    def __init__(self, name=""):
         self.__name = name
         self.__types = []
         self.__attack = None
