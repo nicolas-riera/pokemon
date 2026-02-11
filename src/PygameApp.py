@@ -1,8 +1,8 @@
 import pygame
 import os
 import json
-from src.pokemon.Pokemon import Pokemon
 
+from src.pokemon.Pokemon import Pokemon
 from src.Menu import Menu
 
 from src.pokemon.Pokedex import Pokedex # import the module then the class
@@ -15,7 +15,6 @@ class PygameApp:
         self.screen = pygame.display.set_mode((w, h))
         self.clock = pygame.time.Clock()
         self.running = True
-        self.pokemons = ["Duduo", "Seel"]
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
         self.state = "menu"
@@ -49,37 +48,29 @@ class PygameApp:
     def logic(self):
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
-        elif self.state == "pokedex": #created a pokedex GAMESTATE 
-            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
-        elif self.state == "add_pokemon": #created a add_pokemon GAMESTATE
-            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
-    @staticmethod #method dealing with the logic related to the class without accessing the clas
-    def load_pokemons(pokemon_names): #is this useful ?
-        pokemon_objects = []
-        with open('./data/pokemon.json', 'r') as file:
-        # base_dir = os.path.dirname(os.path.abspath(__file__))
-        # json_path = os.path.join(base_dir, "..", "data", "pokemon.json")
-        # with open(json_path, 'r') as file:
-            pokemon_data = json.load(file) # open our JSON containing pokemons
-        for name in pokemon_names:
-            for id, data in pokemon_data.items():
-                if data["name"] == name:
-                    p = Pokemon(name)
-                    p.types = data["type"]
-                    p.attack = data["attack"]
-                    p.defense = data["defense"]
-                    p.hp = data["hp"]
-                    pokemon_objects.append(p)
-                    break
-        return pokemon_objects
+
     def load(self):
-        self.pokemon_objects = PygameApp.load_pokemons(self.pokemons)
-        return self.pokemon_objects
+        with open('./data/pokedex.json', 'r') as file:
+            self.pokedex_data = json.load(file)
+        
+        with open('./data/pokemon.json', 'r') as file:
+            self.pokemon_data = json.load(file)
+
+        for instance_key, instance_val in self.pokedex_data.items():
+            target_id = instance_val["id"]
+
+            if target_id in self.pokemon_data:
+                pokemon_info = self.pokemon_data[target_id]
+
+                p = Pokemon(pokemon_info["name"])
+                p.set_types(pokemon_info["type"])
+                p.set_attack(pokemon_info["attack"])
+                p.set_defense(pokemon_info["defense"])
+                p.set_hp(pokemon_info["hp"])
+                self.pokemon_objects.append(p)
 
     def loop(self):
         while self.running:
             self.events()
             self.draw()
             self.logic()
-
-            print(self.pokemon_objects[0].name)
