@@ -4,7 +4,6 @@ import json
 
 from src.pokemon.Pokemon import Pokemon
 from src.Menu import Menu
-
 from src.pokemon.Pokedex import Pokedex # import the module then the class
 
 class PygameApp:
