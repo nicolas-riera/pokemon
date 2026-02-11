@@ -11,10 +11,14 @@ class Pokedex:
         '''
         Initialize Pokedex class
         '''
-
+        self.pokedex_data = {} #dict to save our pokemons
         self.pokedex_objects = []
         self.page_index = 0
         self.pokemons_per_page = 5 # amount of pokemon per page to be changed later
+
+        # we load the data when creating the class to not do it again
+        self.load_json()
+        self.load_pokedex_objects()
         print(f"DEBUG: {self.list_pokemon}")
 
     @staticmethod
@@ -26,11 +30,12 @@ class Pokedex:
             self.pokedex_data = json.load(file)
 
     def write_json(self):
-        pass 
-        # todo
+        with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'w') as file:
+            json.dump(self.pokedex_data, file, indent=4)
+        
 
     def load_pokedex_objects(self):
-
+        self.pokedex_objects.clear() # clear the list to not load the pokemons twice 
         for instance_val in self.pokedex_data.values():
             target_id = instance_val["id"]
 
@@ -42,5 +47,24 @@ class Pokedex:
                 p.set_attack(pokemon_info["attack"])
                 p.set_defense(pokemon_info["defense"])
                 p.set_hp(instance_val["hp"])
-                #todo
+                p.set_level(instance_val["level"])
+                p.set_xp(instance_val["xp"])
                 self.pokedex_objects.append(p)
+
+    def add_pokemon_to_pokedex(self, pokemon_id, hp, level, xp):
+        """
+        Method called to capture a pokemon and save it into the pokedex JSON
+        """
+        next_index = str(len(self.pokedex_data)) # simply find the next next index for pagination purposes 
+
+        new_pokemon = { #we init our pokemon as dict 
+            "id": pokemon_id,
+            "hp": hp,
+            "level": level,
+            "xp": xp
+        }
+        self.pokedex_data[next_index] = new_pokemon # set our new pokemon in the next index in pokemon data 
+
+        self.write_json() # call function to dump new pokemon in json
+        self.load_pokedex_objects() # actualize pokedex and clear 
+    
