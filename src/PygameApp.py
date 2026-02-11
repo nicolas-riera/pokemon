@@ -5,7 +5,7 @@ from src.pokemon.Pokemon import Pokemon
 
 from src.Menu import Menu
 
-from src.pokemon import Pokedex
+from src.pokemon.Pokedex import Pokedex # import the module then the class
 
 class PygameApp:
     def __init__(self, w, h):
@@ -42,7 +42,7 @@ class PygameApp:
         if self.state == "menu":
             self.menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
-            self.pokedex.pokedex_rendering(self.screen)
+            Pokedex.pokedex_rendering(self.screen)
         pygame.display.flip()
         self.clock.tick(60) 
 
