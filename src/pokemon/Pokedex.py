@@ -1,8 +1,10 @@
 import sys
 import os
 import pygame
+import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, BASE_DIR
+from src.assets_loading import POKEDEX_BACKGROUND, BASE_DIR, POKEMON_DATA
+from src.pokemon.Pokemon import Pokemon
 
 # Go up two levels to get the project root (The 'POKEMON' folder)
 # current_dir is ".../src/pokemon", parent is ".../src", grand-parent is ".../POKEMON"
@@ -11,21 +13,13 @@ PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', '..'))
 sys.path.append(PROJECT_ROOT)
 
 class Pokedex:
-    def __init__(self, data_pokemon): 
+    def __init__(self): 
 
         '''
-        Initialize our Pokedex class
-        :param data_pokemon: dictionnary containing all the informations about Pokemons (received from PagameApp.py)
+        Initialize Pokedex class
         '''
 
-        self.all_pokemons = data_pokemon
-        if isinstance(data_pokemon, dict): # checking if the data is a dict or list
-            self.list_pokemon = list(data_pokemon.values()) #convert the JSON dict into a list to get access to index
-        elif isinstance(data_pokemon, list):
-            self.list_pokemon = data_pokemon
-        else:
-            self.list_pokemon = [] #error handling the data isn't a list and isn't handled by our pokedex
-        
+        self.pokedex_objects = []
         self.page_index = 0
         self.pokemons_per_page = 5 # amount of pokemon per page to be changed later
         print(f"DEBUG: {self.list_pokemon}")
@@ -34,6 +28,26 @@ class Pokedex:
     def pokedex_rendering(screen):
         screen.blit(POKEDEX_BACKGROUND, (0, 0))
 
-# if __name__ == "__main__":
-#     printing = PygameApp.load_pokemons([]) #takes pokemon names as an argument and return pokemon data as a list
-#     print(printing)
+    def load_json(self):
+        with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'r') as file:
+            self.pokedex_data = json.load(file)
+
+    def write_json(self):
+        pass 
+        # todo
+
+    def load_pokedex_objects(self):
+
+        for instance_val in self.pokedex_data.values():
+            target_id = instance_val["id"]
+
+            if target_id in POKEMON_DATA:
+                pokemon_info = POKEMON_DATA[target_id]
+
+                p = Pokemon(pokemon_info["name"])
+                p.set_types(pokemon_info["type"])
+                p.set_attack(pokemon_info["attack"])
+                p.set_defense(pokemon_info["defense"])
+                p.set_hp(instance_val["hp"])
+                #todo
+                self.pokedex_objects.append(p)

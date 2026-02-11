@@ -12,5 +12,8 @@ CURSOR = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "cursor
 
 POKEDEX_BACKGROUND = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "pokedex_bg.png"))
 
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "pokemons_type_stats.json"), "r", encoding="UTF-8") as f:
+with open(os.path.join(BASE_DIR, "..", "data", "pokemons_type_stats.json"), "r", encoding="UTF-8") as f:
     POKEMONS_TYPE_STATS = json.load(f)
+        
+with open(os.path.join(BASE_DIR, "..", "data", "pokemon.json"), 'r', encoding="UTF-8") as f:
+    POKEMON_DATA = json.load(f)
