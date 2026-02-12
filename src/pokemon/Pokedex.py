@@ -3,7 +3,7 @@ import pygame
 import json
 import time
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -27,7 +27,7 @@ class Pokedex:
 
     def pokedex_music(self):
         if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.load(POKEMON_CENTER)
+            pygame.mixer.music.load(POKEMON_CENTER_MUSIC)
             pygame.mixer.music.play(-1)
         elif self.music != "pokedex":
             self.music = "pokedex"
