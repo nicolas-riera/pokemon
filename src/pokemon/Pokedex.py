@@ -119,9 +119,11 @@ class Pokedex:
             pygame.draw.rect(screen, (185, 185, 185), (85, position_y,630, 90), border_radius = 10)
             rect = pygame.Rect((85, position_y,630, 90))
             name_pokemon = f"{p.get_name()}"
-            type_poekmon = f"{p.get_types()}"
+            type_pokemon = f"{p.get_types()}"
             stats_pokemon = f"{p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
             self.draw_text_aligned(screen, name_pokemon, font, (0, 0, 0), rect, "midtop", padding=any)
+            self.draw_text_aligned(screen, type_pokemon, font, (0, 0, 0), rect, "midright", padding= (10,0))
+            self.draw_text_aligned(screen, stats_pokemon, font, (0, 0, 0), rect, "midleft", padding=(10,0))
 
             # surface_text_name = font.render(name_pokemon, True, (0, 0, 0))
             # surface_text_type = font.render(type_poekmon, True, (0, 0, 0)) 
@@ -132,7 +134,6 @@ class Pokedex:
 
 
             position_y += 100 # spacing between lines 
-
         # print(pygame.mouse.get_pos())
 
     def pokedex_logic(self, escpressed, state, mouseclicked):
@@ -157,13 +158,23 @@ class Pokedex:
         pokemons_displayed = self.pokedex_objects[beginning_page_index:ending_page_index]
 
         position_y = 145
+        hover = False
+        
         for p in pokemons_displayed:
             # Create a Rect matching the one drawn in draw_pokedex
             button_rect = pygame.Rect(85, position_y, 630, 90)
-            if button_rect.collidepoint(pygame.mouse.get_pos()) and mouseclicked:
-                pygame.mixer.Sound(SFX_SWAP).play()
-                print(f"Clicked on {p.get_name()}")
+            if button_rect.collidepoint(pygame.mouse.get_pos()):
+                if mouseclicked:
+                    pygame.mixer.Sound(SFX_SWAP).play()
+                    print(f"Clicked on {p.get_name()}")
+                else:
+                    hover = True
             position_y += 100
-            
+
+        if hover:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)  
+        else:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
         return state
 
