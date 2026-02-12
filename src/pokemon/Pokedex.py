@@ -3,7 +3,7 @@ import pygame
 import json
 import time
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -147,6 +147,7 @@ class Pokedex:
         if escpressed:
             pygame.mixer.music.pause()
             pygame.mixer.music.unload()
+            pygame.mixer.Sound(SFX_TINK).play()
             self.music = None
             state = "menu"
         
@@ -160,6 +161,7 @@ class Pokedex:
             # Create a Rect matching the one drawn in draw_pokedex
             button_rect = pygame.Rect(85, position_y, 630, 90)
             if button_rect.collidepoint(pygame.mouse.get_pos()) and mouseclicked:
+                pygame.mixer.Sound(SFX_SWAP).play()
                 print(f"Clicked on {p.get_name()}")
             position_y += 100
             

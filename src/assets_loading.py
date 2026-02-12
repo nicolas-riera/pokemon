@@ -53,8 +53,8 @@ SFX_PRESS_AB = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_PRESS
 
 SFX_RUN = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_RUN.wav")
 
-# Used for deleting pokemon from pokedex
+# Used when selecting main pokemon
 SFX_SWAP = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_SWAP.wav")
 
-# Used for selecting main pokemon
+# Used when pressing esc
 SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.wav")
