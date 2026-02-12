@@ -87,9 +87,10 @@ class Pokedex:
             surface_text = font.render(text, True, (0, 0, 0)) 
             screen.blit(surface_text, (90, position_y))
             position_y += 100 # spacing between lines 
-        print(pygame.mouse.get_pos())
 
-    def pokedex_logic(self, escpressed, state):
+        # print(pygame.mouse.get_pos())
+
+    def pokedex_logic(self, escpressed, state, mouseclicked):
         """
         Method managing pokedex inputs
         param escpressed : get escape input
@@ -97,5 +98,18 @@ class Pokedex:
         """
         if escpressed:
             state = "menu"
-        #todo elif
+        
+        # Re-calculate the displayed items to check for collisions
+        beginning_page_index = self.page_index * self.pokemons_per_page
+        ending_page_index = beginning_page_index + self.pokemons_per_page
+        pokemons_displayed = self.pokedex_objects[beginning_page_index:ending_page_index]
+
+        position_y = 145
+        for p in pokemons_displayed:
+            # Create a Rect matching the one drawn in draw_pokedex
+            button_rect = pygame.Rect(85, position_y, 630, 90)
+            if button_rect.collidepoint(pygame.mouse.get_pos()) and mouseclicked:
+                print(f"Clicked on {p.get_name()}")
+            position_y += 100
+            
         return state
