@@ -1,6 +1,7 @@
 import os
 import pygame
 import json
+import time
 
 from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER
 from src.pokemon.Pokemon import Pokemon
@@ -18,17 +19,21 @@ class Pokedex:
         self.pokedex_objects = []
         self.page_index = 0
         self.pokemons_per_page = 5 # amount of pokemon per page to be changed later
+        self.music = None
 
         # we load the data when creating the class to not do it again
         self.load_json()
         self.load_pokedex_objects()
 
-    @staticmethod
-    def pokedex_music():
+    def pokedex_music(self):
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(POKEMON_CENTER)
             pygame.mixer.music.play(-1)
-
+        elif self.music != "pokedex":
+            self.music = "pokedex"
+            pygame.mixer.music.pause()
+            pygame.mixer.music.unload()
+            
     def load_json(self):
         with open(get_data_path("pokedex.json"), 'r') as file:
             self.pokedex_data = json.load(file)
@@ -109,6 +114,7 @@ class Pokedex:
         if escpressed:
             pygame.mixer.music.pause()
             pygame.mixer.music.unload()
+            self.music = None
             state = "menu"
         
         # Re-calculate the displayed items to check for collisions
