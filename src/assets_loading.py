@@ -2,6 +2,8 @@ import pygame
 import os
 import json
 
+from src.pyinstaller.data_path import get_data_path
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 LOGO_TITLE = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "pokemon_logo.png"))
@@ -12,8 +14,8 @@ CURSOR = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "cursor
 
 POKEDEX_BACKGROUND = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "pokedex_bg.png"))
 
-with open(os.path.join(BASE_DIR, "..", "data", "pokemons_type_stats.json"), "r", encoding="UTF-8") as f:
+with open(get_data_path("pokemons_type_stats.json"), "r", encoding="UTF-8") as f:
     POKEMONS_TYPE_STATS = json.load(f)
         
-with open(os.path.join(BASE_DIR, "..", "data", "pokemon.json"), 'r', encoding="UTF-8") as f:
+with open(get_data_path("pokemon.json"), 'r', encoding="UTF-8") as f:
     POKEMON_DATA = json.load(f)

@@ -4,6 +4,7 @@ import json
 
 from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA
 from src.pokemon.Pokemon import Pokemon
+from src.pyinstaller.data_path import get_data_path
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,11 +24,11 @@ class Pokedex:
         self.load_pokedex_objects()
 
     def load_json(self):
-        with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'r') as file:
+        with open(get_data_path("pokedex.json"), 'r') as file:
             self.pokedex_data = json.load(file)
 
     def write_json(self):
-        with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'w') as file:
+        with open(get_data_path("pokedex.json"), 'w') as file:
             json.dump(self.pokedex_data, file, indent=4)
         
 
