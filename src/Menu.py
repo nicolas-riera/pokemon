@@ -1,6 +1,6 @@
 import pygame
 
-from src.assets_loading import LOGO_TITLE_SCALED, LOGO_TITLE_RECT, CURSOR, INTRO_TITLE_MUSIC
+from src.assets_loading import LOGO_TITLE_SCALED, LOGO_TITLE_RECT, CURSOR, INTRO_TITLE_MUSIC, SFX_PRESS_AB
 
 class Menu:
     def __init__(self):
@@ -49,6 +49,7 @@ class Menu:
             raise SystemExit
         if self.__play_button.collidepoint(pygame.mouse.get_pos()) or self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
             if mouseclicked:
+                pygame.mixer.Sound(SFX_PRESS_AB).play()
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                 if self.__play_button.collidepoint(pygame.mouse.get_pos()):
                     state = "game"
