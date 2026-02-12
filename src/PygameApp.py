@@ -40,8 +40,11 @@ class PygameApp:
                 if event.key == pygame.K_ESCAPE:
                     self.escpressed = True 
             
+            # musics that have an intro
             if self.state == "menu":
                 if event.type == MUSIC_END:
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.unload()
                     pygame.mixer.music.load(TITLE_MUSIC)
                     pygame.mixer.music.play(-1) 
             else:
