@@ -120,7 +120,7 @@ class Pokedex:
             rect = pygame.Rect((85, position_y,630, 90))
             name_pokemon = f"{p.get_name()}"
             type_pokemon = f"{p.get_types()}"
-            stats_pokemon = f"{p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
+            stats_pokemon = f"ATT : {p.get_attack()} DEF : {p.get_defense()} HP : {p.get_hp()} LVL : {p.get_level()} XP :{p.get_xp()}"
             self.draw_text_aligned(screen, name_pokemon, font, (0, 0, 0), rect, "midtop", padding=any)
             self.draw_text_aligned(screen, type_pokemon, font, (0, 0, 0), rect, "midright", padding= (10,0))
             self.draw_text_aligned(screen, stats_pokemon, font, (0, 0, 0), rect, "midleft", padding=(10,0))
