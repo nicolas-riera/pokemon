@@ -28,3 +28,5 @@ with open(get_data_path("pokemon.json"), 'r', encoding="UTF-8") as f:
 
 INTRO_TITLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_title_screen.mp3")
 TITLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "title_screen.mp3")
+
+POKEMON_CENTER = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "pokemon_center.mp3")
