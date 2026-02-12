@@ -17,12 +17,15 @@ class Combat:
         return mult
     
     @staticmethod
-    def __select_random_pokemon():
+    def __select_random_pokemon_from_POKEMON_DATA(ally):
         pokemon = Pokemon()
-        # print(POKEMON_DATA)
-        random_pokemon = random.choice(list(POKEMON_DATA.values()))
-        print(random_pokemon)
-        
+
+        random_pokemon_dict = random.choice(list(POKEMON_DATA.values()))
+        pokemon.load_from_POKEMON_DATA_dict(random_pokemon_dict)
+        pokemon.set_level(random.randint(
+            ally.get_level() - 1, ally.get_level() + 1)
+        )
+
         return pokemon
 
     def draw(self):
@@ -31,6 +34,7 @@ class Combat:
     def logic(self, ally):
         if self.first_run:
             self.first_run = False
-            self.enemy = self.__select_random_pokemon()
+            self.enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+        
 
-        return self.state 
+        return self.state

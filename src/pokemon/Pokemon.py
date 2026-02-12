@@ -8,6 +8,13 @@ class Pokemon:
         self.__level = 1
         self.__xp = 0
 
+    def load_from_POKEMON_DATA_dict(self, dict):
+        self.set_name(dict["name"])
+        self.set_types(dict["type"])
+        self.set_attack(dict["attack"])
+        self.set_defense(dict["defense"])
+        self.set_hp(dict["hp"])
+
     def get_name(self):
         return self.__name
 
