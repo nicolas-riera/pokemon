@@ -78,6 +78,28 @@ class Pokedex:
         self.write_json() # call function to dump new pokemon in json
         self.load_pokedex_objects() # actualize pokedex and clear 
 
+    def draw_text_aligned(self, surface, text, font, color, container_rect, align="center", padding=(0,0)):
+        """
+        draw an alligned text according to the given rect
+        align: "center", "topleft", "midleft", "midright"
+        padding: tuple (x, y) to move our text
+        """
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        if align == "center":
+            text_rect.center = container_rect.center #allign
+        elif align == "midleft":
+            text_rect.midleft = container_rect.midleft
+            text_rect.x += padding[0] #add margin 
+        elif align == "midright":
+            text_rect.midright = container_rect.midright
+            text_rect.x -= padding[0] 
+        elif align == "midtop":
+            text_rect.midtop = container_rect.midtop
+            # text_rect.x += padding[0]
+            # text_rect.y += padding[1]
+        surface.blit(text_surface, text_rect)
+
     def draw_pokedex(self, screen, font):
         screen.blit(POKEDEX_BACKGROUND, (0, 0))
 
@@ -95,9 +117,20 @@ class Pokedex:
             # )
 
             pygame.draw.rect(screen, (185, 185, 185), (85, position_y,630, 90), border_radius = 10)
-            text = f"{p.get_name(), p.get_types(), p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
-            surface_text = font.render(text, True, (0, 0, 0)) 
-            screen.blit(surface_text, (90, position_y))
+            rect = pygame.Rect((85, position_y,630, 90))
+            name_pokemon = f"{p.get_name()}"
+            type_poekmon = f"{p.get_types()}"
+            stats_pokemon = f"{p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
+            self.draw_text_aligned(screen, name_pokemon, font, (0, 0, 0), rect, "midtop", padding=any)
+
+            # surface_text_name = font.render(name_pokemon, True, (0, 0, 0))
+            # surface_text_type = font.render(type_poekmon, True, (0, 0, 0)) 
+            # surface_text_stats = font.render(stats_pokemon, True, (0, 0, 0)) 
+            # screen.blit(surface_text_name, (315, position_y))
+            # screen.blit(surface_text_type, (90, position_y - 20))
+            # screen.blit(surface_text_stats, (540, position_y - 20))
+
+
             position_y += 100 # spacing between lines 
 
         # print(pygame.mouse.get_pos())
@@ -131,3 +164,4 @@ class Pokedex:
             position_y += 100
             
         return state
+
