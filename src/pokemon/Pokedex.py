@@ -1,7 +1,6 @@
 import os
 import pygame
 import json
-import time
 
 from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK
 from src.pokemon.Pokemon import Pokemon
