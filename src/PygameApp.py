@@ -5,6 +5,7 @@ from src.assets_loading import BASE_DIR, TITLE_MUSIC
 from src.pokemon.Pokemon import Pokemon
 from src.pokemon.Pokedex import Pokedex
 from src.Menu import Menu
+from src.screen_transition import screen_transition
 
 MUSIC_END = pygame.USEREVENT + 1
 
@@ -63,10 +64,14 @@ class PygameApp:
         self.clock.tick(60) 
 
     def logic(self):
+        prev_state = self.state
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
-        if self.state == "pokedex":
+        elif self.state == "pokedex":
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked)
+
+        if prev_state != self.state:
+            screen_transition(self.screen)
 
     def loop(self):
         while self.running:
