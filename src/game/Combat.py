@@ -11,4 +11,3 @@ class Combat:
             mult *= POKEMONS_TYPE_STATS[attack_type][def_type]
         return mult
             
-

@@ -1,26 +1,28 @@
 import pygame
 import os
-import json
-from src.pokemon.Pokemon import Pokemon
 
+from src.assets_loading import BASE_DIR
+from src.pokemon.Pokemon import Pokemon
+from src.pokemon.Pokedex import Pokedex
 from src.Menu import Menu
 
 class PygameApp:
     def __init__(self, w, h):
         pygame.init()
         pygame.display.set_caption("Pokémon")
-        # pygame.display.set_icon(pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__), "..", "assets", "img", "logo.png")))
+        pygame.display.set_icon(pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "logo.png")))
         self.screen = pygame.display.set_mode((w, h))
         self.clock = pygame.time.Clock()
         self.running = True
-        self.pokemons = ["Duduo", "Seel"]
         self.pokemon_objects = []
-        self.font = pygame.font.Font(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "font", "pokemon_generation_1.ttf"), 30)
+        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
         self.menu = Menu()
-
+        self.pokedex = Pokedex()
 
     def events(self):
+        self.escpressed = False
+        self.mouseclicked = False
 
         for event in pygame.event.get():
 
@@ -29,19 +31,17 @@ class PygameApp:
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouseclicked = True
-            else:
-                self.mouseclicked = False
 
             if event.type == pygame.KEYDOWN:
-                if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                if event.key == pygame.K_ESCAPE:
                     self.escpressed = True 
-            else:
-                self.escpressed = False
 
     def draw(self):
         self.screen.fill("white")
         if self.state == "menu":
             self.menu.menu_rendering(self.screen, self.font)
+        if self.state == "pokedex":
+            self.pokedex.draw_pokedex(self.screen, self.font[1])
         pygame.display.flip()
         self.clock.tick(60) 
 
@@ -49,25 +49,8 @@ class PygameApp:
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
 
-    def load(self):
-        with open('./data/pokemons.json', 'r') as file:
-            self.pokemon_data = json.load(file)
-        
-        for name in self.pokemons:
-            for id, data in self.pokemon_data.items():
-                if data["name"] == name:
-                    p = Pokemon(name)
-                    p.types = data["type"]
-                    p.attack = data["attack"]
-                    p.defense = data["defense"]
-                    p.hp = data["hp"]
-                    self.pokemon_objects.append(p)
-                    break
-
     def loop(self):
         while self.running:
             self.events()
             self.draw()
             self.logic()
-
-            print(self.pokemon_objects[0].name)

@@ -10,5 +10,10 @@ LOGO_TITLE_SCALED = pygame.transform.smoothscale(LOGO_TITLE, (LOGO_TITLE.get_siz
 
 CURSOR = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "cursor.png"))
 
+POKEDEX_BACKGROUND = pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "pokedex_bg.png"))
+
 with open(os.path.join(BASE_DIR, "..", "data", "pokemons_type_stats.json"), "r", encoding="UTF-8") as f:
     POKEMONS_TYPE_STATS = json.load(f)
+        
+with open(os.path.join(BASE_DIR, "..", "data", "pokemon.json"), 'r', encoding="UTF-8") as f:
+    POKEMON_DATA = json.load(f)
