@@ -5,6 +5,7 @@ from src.assets_loading import BASE_DIR
 from src.pokemon.Pokemon import Pokemon
 from src.pokemon.Pokedex import Pokedex
 from src.Menu import Menu
+from src.game.Combat import Combat
 
 class PygameApp:
     def __init__(self, w, h):
@@ -19,6 +20,7 @@ class PygameApp:
         self.state = "menu"
         self.menu = Menu()
         self.pokedex = Pokedex()
+        self.combat = Combat()
 
     def events(self):
         self.escpressed = False
@@ -42,12 +44,17 @@ class PygameApp:
             self.menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
+        if self.state == "game":
+            self.combat.draw()
+
         pygame.display.flip()
-        self.clock.tick(60) 
+        self.clock.tick(60)
 
     def logic(self):
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
+        if self.state == "game":
+            self.state = self.combat.logic(self.pokedex.pokedex_objects[0])
 
     def loop(self):
         while self.running:
