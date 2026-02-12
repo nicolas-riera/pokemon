@@ -83,7 +83,7 @@ class Pokedex:
             # )
 
             pygame.draw.rect(screen, (185, 185, 185), (85, position_y,630, 90), border_radius = 10)
-            text = f"{p.get_name()}"
+            text = f"{p.get_name(), p.get_types(), p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
             surface_text = font.render(text, True, (0, 0, 0)) 
             screen.blit(surface_text, (90, position_y))
             position_y += 100 # spacing between lines 
