@@ -71,9 +71,21 @@ class Pokedex:
         beginning_page_index = self.page_index * self.pokemons_per_page # get the index of the first element and multiply it by the number of page to get the first item for example page two starts with the pokemon indexed at ten
         ending_page_index = beginning_page_index + self.pokemons_per_page
         pokemons_displayed = self.pokedex_objects [beginning_page_index:ending_page_index]
-        position_y = 50
+        position_y = 150
         for p in pokemons_displayed:
             text = f"{p.get_name()}"
             surface_text = font.render(text, True, (0, 0, 0)) 
-            screen.blit(surface_text, (50, position_y))
+            screen.blit(surface_text, (90, position_y))
             position_y += 50 # spacing between lines 
+        print(pygame.mouse.get_pos())
+
+    def pokedex_logic(self, escpressed, state):
+        """
+        Method managing pokedex inputs
+        param escpressed : get escape input
+        param state : get GAMESTATE
+        """
+        if escpressed:
+            state = "menu"
+        #todo elif
+        return state
