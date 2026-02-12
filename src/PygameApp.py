@@ -36,7 +36,7 @@ class PygameApp:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.escpressed = True 
+                    self.escpressed = True
 
     def draw(self):
         self.screen.fill("white")
@@ -44,7 +44,7 @@ class PygameApp:
             self.menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
-        if self.state == "game":
+        if self.state in ["game", "choose_attack", "pre_attack"]:
             self.combat.draw()
 
         pygame.display.flip()
@@ -53,7 +53,7 @@ class PygameApp:
     def logic(self):
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
-        if self.state == "game":
+        if self.state in ["game", "choose_attack", "pre_attack"]:
             self.state = self.combat.logic(self.pokedex.pokedex_objects[0])
 
     def loop(self):

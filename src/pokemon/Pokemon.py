@@ -15,6 +15,15 @@ class Pokemon:
         self.set_defense(dict["defense"])
         self.set_hp(dict["hp"])
 
+    def is_alive(self):
+        if self.get_hp() > 0:
+            return True
+
+        return False
+
+    def receive_attack(self, hp):
+        self.set_hp(self.get_hp() - hp)
+
     def get_name(self):
         return self.__name
 
