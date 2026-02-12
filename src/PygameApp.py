@@ -48,7 +48,10 @@ class PygameApp:
                     pygame.mixer.music.load(TITLE_MUSIC)
                     pygame.mixer.music.play(-1)
             elif self.state == "pokedex":
-                pass # no intro music        
+                # no intro music  
+                if pygame.mixer.music.get_busy():
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.unload()
             else:
                 pygame.mixer.music.pause()
                 pygame.mixer.music.unload()

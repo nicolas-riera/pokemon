@@ -2,7 +2,7 @@ import os
 import pygame
 import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -22,6 +22,12 @@ class Pokedex:
         # we load the data when creating the class to not do it again
         self.load_json()
         self.load_pokedex_objects()
+
+    @staticmethod
+    def pokedex_music():
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(POKEMON_CENTER)
+            pygame.mixer.music.play(-1)
 
     def load_json(self):
         with open(get_data_path("pokedex.json"), 'r') as file:
@@ -97,7 +103,12 @@ class Pokedex:
         param escpressed : get escape input
         param state : get GAMESTATE
         """
+
+        self.pokedex_music()
+
         if escpressed:
+            pygame.mixer.music.pause()
+            pygame.mixer.music.unload()
             state = "menu"
         
         # Re-calculate the displayed items to check for collisions
