@@ -29,4 +29,18 @@ with open(get_data_path("pokemon.json"), 'r', encoding="UTF-8") as f:
 INTRO_TITLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_title_screen.mp3")
 TITLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "title_screen.mp3")
 
-POKEMON_CENTER = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "pokemon_center.mp3")
+POKEMON_CENTER_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "pokemon_center.mp3")
+
+INTRO_BATTLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_battle.mp3")
+BATTLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "battle.mp3")
+
+CAUGHT_POKEMON_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "caught_pokemon.mp3")
+
+POKEMON_HEALED_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "pokemon_healed.mp3")
+
+INTRO_EVOLUTION_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_evolution.mp3")
+EVOLUTION_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "evolution.mp3")
+POKEMON_EVOLVED_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "pokemon_evolved.mp3")
+
+INTRO_VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_victory.mp3")
+VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "victory.mp3")
