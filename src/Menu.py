@@ -1,12 +1,19 @@
 import pygame
 
-from src.assets_loading import LOGO_TITLE_SCALED, LOGO_TITLE_RECT, CURSOR
+from src.assets_loading import LOGO_TITLE_SCALED, LOGO_TITLE_RECT, CURSOR, INTRO_TITLE_MUSIC
 
 class Menu:
     def __init__(self):
         self.__play_button = pygame.Rect((180, 405, 440, 75))
         self.__enemy_pokemon_button = pygame.Rect((180, 485, 440, 70))
         self.__pokedex_button = pygame.Rect((180, 560, 440, 75))
+
+    @staticmethod
+    def menu_intro_music():
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(INTRO_TITLE_MUSIC)
+            pygame.mixer.music.play()
+            
 
     def menu_rendering(self, screen, font):
 
@@ -34,6 +41,8 @@ class Menu:
 
 
     def menu_logic(self, escpressed, mouseclicked, state):
+
+        self.menu_intro_music()
 
         if escpressed: 
             pygame.quit()

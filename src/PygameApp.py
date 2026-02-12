@@ -1,14 +1,17 @@
 import pygame
 import os
 
-from src.assets_loading import BASE_DIR
+from src.assets_loading import BASE_DIR, TITLE_MUSIC
 from src.pokemon.Pokemon import Pokemon
 from src.pokemon.Pokedex import Pokedex
 from src.Menu import Menu
 
+MUSIC_END = pygame.USEREVENT + 1
+
 class PygameApp:
     def __init__(self, w, h):
         pygame.init()
+        pygame.mixer.init()
         pygame.display.set_caption("Pokémon")
         pygame.display.set_icon(pygame.image.load(os.path.join(BASE_DIR, "..", "assets", "img", "logo.png")))
         self.screen = pygame.display.set_mode((w, h))
@@ -19,6 +22,7 @@ class PygameApp:
         self.state = "menu"
         self.menu = Menu()
         self.pokedex = Pokedex()
+        pygame.mixer.music.set_endevent(MUSIC_END)
 
     def events(self):
         self.escpressed = False
@@ -35,6 +39,14 @@ class PygameApp:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.escpressed = True 
+            
+            if self.state == "menu":
+                if event.type == MUSIC_END:
+                    pygame.mixer.music.load(TITLE_MUSIC)
+                    pygame.mixer.music.play(-1) 
+            else:
+                pygame.mixer.music.pause()
+                pygame.mixer.music.unload()
 
     def draw(self):
         self.screen.fill("white")
