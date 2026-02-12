@@ -1,8 +1,9 @@
 import os
 import pygame
 import json
+import time
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -18,11 +19,21 @@ class Pokedex:
         self.pokedex_objects = []
         self.page_index = 0
         self.pokemons_per_page = 5 # amount of pokemon per page to be changed later
+        self.music = None
 
         # we load the data when creating the class to not do it again
         self.load_json()
         self.load_pokedex_objects()
 
+    def pokedex_music(self):
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(POKEMON_CENTER_MUSIC)
+            pygame.mixer.music.play(-1)
+        elif self.music != "pokedex":
+            self.music = "pokedex"
+            pygame.mixer.music.pause()
+            pygame.mixer.music.unload()
+            
     def load_json(self):
         with open(get_data_path("pokedex.json"), 'r') as file:
             self.pokedex_data = json.load(file)
@@ -67,6 +78,28 @@ class Pokedex:
         self.write_json() # call function to dump new pokemon in json
         self.load_pokedex_objects() # actualize pokedex and clear 
 
+    def draw_text_aligned(self, surface, text, font, color, container_rect, align="center", padding=(0,0)):
+        """
+        draw an alligned text according to the given rect
+        align: "center", "topleft", "midleft", "midright"
+        padding: tuple (x, y) to move our text
+        """
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        if align == "center":
+            text_rect.center = container_rect.center #allign
+        elif align == "midleft":
+            text_rect.midleft = container_rect.midleft
+            text_rect.x += padding[0] #add margin 
+        elif align == "midright":
+            text_rect.midright = container_rect.midright
+            text_rect.x -= padding[0] 
+        elif align == "midtop":
+            text_rect.midtop = container_rect.midtop
+            # text_rect.x += padding[0]
+            # text_rect.y += padding[1]
+        surface.blit(text_surface, text_rect)
+
     def draw_pokedex(self, screen, font):
         screen.blit(POKEDEX_BACKGROUND, (0, 0))
 
@@ -84,19 +117,51 @@ class Pokedex:
             # )
 
             pygame.draw.rect(screen, (185, 185, 185), (85, position_y,630, 90), border_radius = 10)
-            text = f"{p.get_name()}"
-            surface_text = font.render(text, True, (0, 0, 0)) 
-            screen.blit(surface_text, (90, position_y))
-            position_y += 100 # spacing between lines 
-        print(pygame.mouse.get_pos())
+            rect = pygame.Rect((85, position_y,630, 90))
+            name_pokemon = f"{p.get_name()}"
+            type_poekmon = f"{p.get_types()}"
+            stats_pokemon = f"{p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
+            self.draw_text_aligned(screen, name_pokemon, font, (0, 0, 0), rect, "midtop", padding=any)
 
-    def pokedex_logic(self, escpressed, state):
+            # surface_text_name = font.render(name_pokemon, True, (0, 0, 0))
+            # surface_text_type = font.render(type_poekmon, True, (0, 0, 0)) 
+            # surface_text_stats = font.render(stats_pokemon, True, (0, 0, 0)) 
+            # screen.blit(surface_text_name, (315, position_y))
+            # screen.blit(surface_text_type, (90, position_y - 20))
+            # screen.blit(surface_text_stats, (540, position_y - 20))
+
+
+            position_y += 100 # spacing between lines 
+
+        # print(pygame.mouse.get_pos())
+
+    def pokedex_logic(self, escpressed, state, mouseclicked):
         """
         Method managing pokedex inputs
         param escpressed : get escape input
         param state : get GAMESTATE
         """
+
+        self.pokedex_music()
+
         if escpressed:
+            pygame.mixer.music.pause()
+            pygame.mixer.music.unload()
+            self.music = None
             state = "menu"
-        #todo elif
+        
+        # Re-calculate the displayed items to check for collisions
+        beginning_page_index = self.page_index * self.pokemons_per_page
+        ending_page_index = beginning_page_index + self.pokemons_per_page
+        pokemons_displayed = self.pokedex_objects[beginning_page_index:ending_page_index]
+
+        position_y = 145
+        for p in pokemons_displayed:
+            # Create a Rect matching the one drawn in draw_pokedex
+            button_rect = pygame.Rect(85, position_y, 630, 90)
+            if button_rect.collidepoint(pygame.mouse.get_pos()) and mouseclicked:
+                print(f"Clicked on {p.get_name()}")
+            position_y += 100
+            
         return state
+
