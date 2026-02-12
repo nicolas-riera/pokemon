@@ -157,13 +157,23 @@ class Pokedex:
         pokemons_displayed = self.pokedex_objects[beginning_page_index:ending_page_index]
 
         position_y = 145
+        hover = False
+        
         for p in pokemons_displayed:
             # Create a Rect matching the one drawn in draw_pokedex
             button_rect = pygame.Rect(85, position_y, 630, 90)
-            if button_rect.collidepoint(pygame.mouse.get_pos()) and mouseclicked:
-                pygame.mixer.Sound(SFX_SWAP).play()
-                print(f"Clicked on {p.get_name()}")
+            if button_rect.collidepoint(pygame.mouse.get_pos()):
+                if mouseclicked:
+                    pygame.mixer.Sound(SFX_SWAP).play()
+                    print(f"Clicked on {p.get_name()}")
+                else:
+                    hover = True
             position_y += 100
-            
+
+        if hover:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)  
+        else:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
         return state
 
