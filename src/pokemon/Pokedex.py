@@ -2,8 +2,9 @@ import os
 import pygame
 import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER
 from src.pokemon.Pokemon import Pokemon
+from src.pyinstaller.data_path import get_data_path
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,12 +23,18 @@ class Pokedex:
         self.load_json()
         self.load_pokedex_objects()
 
+    @staticmethod
+    def pokedex_music():
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(POKEMON_CENTER)
+            pygame.mixer.music.play(-1)
+
     def load_json(self):
-        with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'r') as file:
+        with open(get_data_path("pokedex.json"), 'r') as file:
             self.pokedex_data = json.load(file)
 
     def write_json(self):
-        with open(os.path.join(BASE_DIR, "..", "..", "data", "pokedex.json"), 'w') as file:
+        with open(get_data_path("pokedex.json"), 'w') as file:
             json.dump(self.pokedex_data, file, indent=4)
         
 
@@ -96,7 +103,12 @@ class Pokedex:
         param escpressed : get escape input
         param state : get GAMESTATE
         """
+
+        self.pokedex_music()
+
         if escpressed:
+            pygame.mixer.music.pause()
+            pygame.mixer.music.unload()
             state = "menu"
         
         # Re-calculate the displayed items to check for collisions
