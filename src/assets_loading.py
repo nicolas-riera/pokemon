@@ -26,6 +26,8 @@ with open(get_data_path("pokemon.json"), 'r', encoding="UTF-8") as f:
 
 # Audio
 
+    # Music
+
 INTRO_TITLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_title_screen.mp3")
 TITLE_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "title_screen.mp3")
 
@@ -44,3 +46,15 @@ POKEMON_EVOLVED_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music",
 
 INTRO_VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_victory.mp3")
 VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "victory.mp3")
+
+    # SFX
+
+SFX_PRESS_AB = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_PRESS_AB.wav")
+
+SFX_RUN = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_RUN.wav")
+
+# Used for deleting pokemon from pokedex
+SFX_SWAP = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_SWAP.wav")
+
+# Used for selecting main pokemon
+SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.wav")
