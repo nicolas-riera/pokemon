@@ -4,7 +4,7 @@ from src.game.Combat_intro import Combat_intro
 
 import pygame
 
-def screen_transition(screen, state):
+def screen_transition(screen, clock, state):
 
     pygame.mixer.music.pause()
     pygame.mixer.music.unload()
@@ -14,5 +14,5 @@ def screen_transition(screen, state):
     sleep(0.5)
 
     if state == "game":
-        Combat_intro.combat_intro()
+        Combat_intro.combat_intro(screen, clock)
 
