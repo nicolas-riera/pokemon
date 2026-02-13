@@ -44,6 +44,7 @@ class Combat:
         Combat_draw.display_pokemon(self.ally, self.enemy, screen)
 
     def logic(self, ally, escpressed):
+
         if self.first_run:
             self.ally = ally
             self.turn_of_ally = True
