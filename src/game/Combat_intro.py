@@ -25,7 +25,8 @@ class Combat_intro:
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
-                    exit()
+                    pygame.quit()
+                    raise SystemExit
                     
             screen.fill("white")
 
