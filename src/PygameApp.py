@@ -20,12 +20,15 @@ class PygameApp:
         self.clock = pygame.time.Clock()
         self.running = True
         self.pokemon_objects = []
-        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
+        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), )
         self.state = "menu"
+        self.reset_all_class()
+        pygame.mixer.music.set_endevent(MUSIC_END)
+
+    def reset_all_class(self):
         self.menu = Menu()
         self.pokedex = Pokedex()
         self.combat = Combat()
-        pygame.mixer.music.set_endevent(MUSIC_END)
 
     def events(self):
         self.escpressed = False
@@ -63,7 +66,7 @@ class PygameApp:
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
         if self.state in ["game", "choose_attack", "pre_attack"]:
-            self.combat.draw()
+            self.combat.draw(self.screen)
 
         pygame.display.flip()
         self.clock.tick(60)
@@ -73,12 +76,13 @@ class PygameApp:
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
         elif self.state in ["game", "choose_attack", "pre_attack"]:
-            self.state = self.combat.logic(self.pokedex.pokedex_objects[0])
+            self.state = self.combat.logic(self.pokedex.pokedex_objects[0], self.escpressed)
         elif self.state == "pokedex":
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked)
 
-        if prev_state != self.state:
+        if prev_state != self.state :
             screen_transition(self.screen)
+            self.reset_all_class()
 
     def loop(self):
         while self.running:

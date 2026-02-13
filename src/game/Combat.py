@@ -49,6 +49,7 @@ class Combat:
         if self.state == "game" and len(ally.get_types()) == 1:
             self.__attack(ally, self.enemy)
 
+
         # if self.state == "pre_attack":
         #     if self.turn_of_ally:
         #         self.__attack(self.ally, self.enemy)
