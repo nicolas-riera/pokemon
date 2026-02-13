@@ -170,7 +170,6 @@ class Pokedex:
         
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
-        print(pygame.mouse.get_pos())
 
     def pokedex_logic(self, escpressed, state, mouseclicked):
         """
