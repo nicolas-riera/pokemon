@@ -1,7 +1,7 @@
 import random
 import pygame
 
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, INTRO_BATTLE_MUSIC
+from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN
 from src.pokemon.Pokemon import Pokemon
 from src.game.Combat_draw import Combat_draw
 
@@ -12,12 +12,6 @@ class Combat:
         self.turn_of_ally = True
         self.enemy = None
         self.state = "game"
-
-    @staticmethod
-    def combat_intro_music():
-        if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.load(INTRO_BATTLE_MUSIC)
-            pygame.mixer.music.play()
 
     @staticmethod
     def __calculate_attack_mult(attack_type:str, enemy:object):
@@ -50,8 +44,6 @@ class Combat:
         Combat_draw.display_pokemon(self.ally, self.enemy, screen)
 
     def logic(self, ally, escpressed):
-
-        self.combat_intro_music()
 
         if self.first_run:
             self.ally = ally

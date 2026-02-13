@@ -84,7 +84,7 @@ class PygameApp:
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked)
 
         if prev_state != self.state :
-            screen_transition(self.screen)
+            screen_transition(self.screen, self.state)
             self.reset_all_class()
             self.changed_state = True
             
