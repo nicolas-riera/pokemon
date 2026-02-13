@@ -17,6 +17,8 @@ class Combat_intro:
     @staticmethod
     def combat_intro(screen, clock):
 
+        pygame.mouse.set_visible(False)
+
         time_start = time.monotonic()
 
         Combat_intro.battle_intro_music()
@@ -39,3 +41,5 @@ class Combat_intro:
 
             pygame.display.flip()
             clock.tick(60)
+
+        pygame.mouse.set_visible(True)
