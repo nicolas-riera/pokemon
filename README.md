@@ -3,6 +3,11 @@
 ![pythonversion](https://img.shields.io/badge/python-3.x-blue)
 ![pygame](https://img.shields.io/badge/pygame-required-green)
 
+*This project is a school project for educational purposes only. All characters, images, sounds, and trademarks used in this game are the property of Nintendo, Game Freak, and The Pokémon Company.*
+
+*No part of this project is intended for sale or commercial use. It is provided solely for learning and demonstration purposes.*
+
+
 ## Run and Build from source
 
 ### Requirements
