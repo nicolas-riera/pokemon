@@ -79,12 +79,16 @@ class Pokedex:
         self.write_json() # call function to dump new pokemon in json
         self.load_pokedex_objects() # actualize pokedex and clear 
 
-    def draw_text_aligned(self, surface, text, font, color, container_rect, align="center", padding=(0,0)):
+    def draw_text_aligned(self, surface, text, font, color, container_rect, align="center", padding=(0,0), id = None):
         """
         draw an aligned text according to the given rect
         align: "center", "topleft", "midleft", "midright"
         padding: tuple (x, y) to move our text
         """
+        ico = None
+        if id:
+            ico = pygame.image.load(os.path.join(BASE_DIR, "..", "..", "assets", "img", "pokemon_sprites", "icons", f"{id}.png"))
+            ico = pygame.transform.scale(ico, (90, 90))
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         if align == "center":
@@ -102,7 +106,9 @@ class Pokedex:
             text_rect.topleft = container_rect.topleft
             text_rect.x += padding[0]
             text_rect.y += padding[1]
-            # text_rect.x += padding[0]
+            if ico:
+                surface.blit(ico, (text_rect.x,(text_rect.y - 30)))
+                text_rect.x += ico.get_width() + 10
         surface.blit(text_surface, text_rect)
 
     def draw_pokedex(self, screen, font):
@@ -142,12 +148,13 @@ class Pokedex:
             
             # draw on container using relative coordinates (x=0, y=relative_y) to make it modular
             pygame.draw.rect(container, (185, 185, 185), (0, relative_y, 630, button_height), border_radius = 10) 
-            rect = pygame.Rect((0, relative_y, 630, button_height)) 
+            rect = pygame.Rect((0, relative_y, 630, button_height))
+            
             name_pokemon = f"{p.get_name()}"
             type_pokemon = " / ".join(p.get_types()) #display the types without the brackets
             stats_pokemon = f"ATT : {p.get_attack()} DEF : {p.get_defense()} HP : {p.get_hp()} LVL : {p.get_level()} XP :{p.get_xp()}"
             
-            self.draw_text_aligned(container, name_pokemon, name_font, (0, 0, 0), rect, "topleft", padding=(10, 10))
+            self.draw_text_aligned(container, name_pokemon, name_font, (0, 0, 0), rect, "topleft", padding=(10, 10), id = p.get_id())
             self.draw_text_aligned(container, type_pokemon, stats_font, (0, 0, 0), rect, "topright", padding= (10,25))
             self.draw_text_aligned(container, stats_pokemon, stats_font, (0, 0, 0), rect, "bottomleft", padding=(10,10))
 
