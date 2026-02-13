@@ -49,12 +49,12 @@ VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "victor
 
     # SFX
 
-SFX_PRESS_AB = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_PRESS_AB.wav")
+SFX_PRESS_AB = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_PRESS_AB.mp3")
 
-SFX_RUN = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_RUN.wav")
+SFX_RUN = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_RUN.mp3")
 
 # Used when selecting main pokemon
-SFX_SWAP = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_SWAP.wav")
+SFX_SWAP = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_SWAP.mp3")
 
 # Used when pressing esc
-SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.wav")
+SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.mp3")
