@@ -1,7 +1,6 @@
 import os
 import pygame
 import json
-import time
 
 from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK
 from src.pokemon.Pokemon import Pokemon
@@ -18,8 +17,9 @@ class Pokedex:
         self.pokedex_data = {} #dict to save our pokemons
         self.pokedex_objects = []
         self.page_index = 0
-        self.pokemons_per_page = 5 # amount of pokemon per page to be changed later
+        self.pokemons_per_page = 4 # amount of pokemon per page to be changed later
         self.music = None
+        self.font_path = os.path.join(BASE_DIR, "..", "..", "assets", "font", "pokemon_generation_1.ttf")
 
         # we load the data when creating the class to not do it again
         self.load_json()
@@ -80,33 +80,55 @@ class Pokedex:
 
     def draw_text_aligned(self, surface, text, font, color, container_rect, align="center", padding=(0,0)):
         """
-        draw an alligned text according to the given rect
+        draw an aligned text according to the given rect
         align: "center", "topleft", "midleft", "midright"
         padding: tuple (x, y) to move our text
         """
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         if align == "center":
-            text_rect.center = container_rect.center #allign
+            text_rect.center = container_rect.center #align
         elif align == "midleft":
             text_rect.midleft = container_rect.midleft
             text_rect.x += padding[0] #add margin 
-        elif align == "midright":
+            text_rect.y += padding[1]
+        elif align == "bottomright":
             text_rect.midright = container_rect.midright
-            text_rect.x -= padding[0] 
+            # text_rect.x -= padding[0]
+            # text_rect.y += padding[1]
+
         elif align == "midtop":
             text_rect.midtop = container_rect.midtop
+            text_rect.y += padding[1]
             # text_rect.x += padding[0]
-            # text_rect.y += padding[1]
         surface.blit(text_surface, text_rect)
 
     def draw_pokedex(self, screen, font):
         screen.blit(POKEDEX_BACKGROUND, (0, 0))
+        
+        # Create a Surface (width, height) and fill it instead of using the screen a surface later on
+        container_height = 500
+        container = pygame.Surface((630, container_height))
 
         beginning_page_index = self.page_index * self.pokemons_per_page # get the index of the first element and multiply it by the number of page to get the first item for example page two starts with the pokemon indexed at ten
         ending_page_index = beginning_page_index + self.pokemons_per_page
         pokemons_displayed = self.pokedex_objects [beginning_page_index:ending_page_index]
-        position_y = 145
+        
+        # use a relative Y coordinate (starts at 0 inside the container)
+        item_height = container_height / self.pokemons_per_page
+        button_height = item_height - 10 
+        
+        # modular font size
+        name_font_size = int(button_height * 0.30)
+        stats_font_size = int(button_height * 0.17)
+        # max function make sure that it never goes under 10 px
+        # set font size to 25% of button height
+        # if self.font_size != target_font_size:
+        #     self.font_size = target_font_size
+        #     self.font = pygame.font.Font(self.font_path, self.font_size)
+        name_font =  pygame.font.Font(self.font_path, name_font_size)
+        stats_font = pygame.font.Font(self.font_path, stats_font_size)
+        relative_y = 0
         for p in pokemons_displayed:
             # Draw.rect(surface, color, (x position, y position, x width, y width))
             #     pygame.draw.rect(
@@ -115,15 +137,17 @@ class Pokedex:
             #     pygame.Rect(50, 50, 200, 100),  # rect
             #     border_radius=20      # radius of the corners
             # )
-
-            pygame.draw.rect(screen, (185, 185, 185), (85, position_y,630, 90), border_radius = 10)
-            rect = pygame.Rect((85, position_y,630, 90))
+            
+            # draw on container using relative coordinates (x=0, y=relative_y) to make it modular
+            pygame.draw.rect(container, (185, 185, 185), (0, relative_y, 630, button_height), border_radius = 10) 
+            rect = pygame.Rect((0, relative_y, 630, button_height)) 
             name_pokemon = f"{p.get_name()}"
             type_pokemon = f"{p.get_types()}"
-            stats_pokemon = f"{p.get_attack(), p.get_defense(), p.get_hp(), p.get_level(), p.get_xp()}"
-            self.draw_text_aligned(screen, name_pokemon, font, (0, 0, 0), rect, "midtop", padding=any)
-            self.draw_text_aligned(screen, type_pokemon, font, (0, 0, 0), rect, "midright", padding= (10,0))
-            self.draw_text_aligned(screen, stats_pokemon, font, (0, 0, 0), rect, "midleft", padding=(10,0))
+            stats_pokemon = f"ATT : {p.get_attack()} DEF : {p.get_defense()} HP : {p.get_hp()} LVL : {p.get_level()} XP :{p.get_xp()}"
+            
+            self.draw_text_aligned(container, name_pokemon, name_font, (0, 0, 0), rect, "midtop", padding=(0, 10))
+            self.draw_text_aligned(container, type_pokemon, stats_font, (0, 0, 0), rect, "bottomright", padding= any)
+            self.draw_text_aligned(container, stats_pokemon, stats_font, (0, 0, 0), rect, "midleft", padding=(10,20))
 
             # surface_text_name = font.render(name_pokemon, True, (0, 0, 0))
             # surface_text_type = font.render(type_poekmon, True, (0, 0, 0)) 
@@ -133,8 +157,11 @@ class Pokedex:
             # screen.blit(surface_text_stats, (540, position_y - 20))
 
 
-            position_y += 100 # spacing between lines 
-        # print(pygame.mouse.get_pos())
+            relative_y += item_height # spacing between lines 
+        
+        # blit the container onto the screen at the specific position
+        screen.blit(container, (85, 145))
+        print(pygame.mouse.get_pos())
 
     def pokedex_logic(self, escpressed, state, mouseclicked):
         """
@@ -152,24 +179,27 @@ class Pokedex:
             self.music = None
             state = "menu"
         
-        # Re-calculate the displayed items to check for collisions
+        # recalculate the displayed items to check for collisions
         beginning_page_index = self.page_index * self.pokemons_per_page
         ending_page_index = beginning_page_index + self.pokemons_per_page
         pokemons_displayed = self.pokedex_objects[beginning_page_index:ending_page_index]
 
+        container_height = 500
+        item_height = container_height / self.pokemons_per_page
+        button_height = item_height - 10
         position_y = 145
         hover = False
         
         for p in pokemons_displayed:
             # Create a Rect matching the one drawn in draw_pokedex
-            button_rect = pygame.Rect(85, position_y, 630, 90)
+            button_rect = pygame.Rect(85, position_y, 630, button_height)
             if button_rect.collidepoint(pygame.mouse.get_pos()):
                 if mouseclicked:
                     pygame.mixer.Sound(SFX_SWAP).play()
                     print(f"Clicked on {p.get_name()}")
                 else:
                     hover = True
-            position_y += 100
+            position_y += item_height
 
         if hover:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)  
@@ -177,4 +207,3 @@ class Pokedex:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
         return state
-

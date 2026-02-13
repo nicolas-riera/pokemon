@@ -20,7 +20,7 @@ class PygameApp:
         self.clock = pygame.time.Clock()
         self.running = True
         self.pokemon_objects = []
-        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
+        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), )
         self.state = "menu"
         self.menu = Menu()
         self.pokedex = Pokedex()
