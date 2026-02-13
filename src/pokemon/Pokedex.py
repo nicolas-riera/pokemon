@@ -88,17 +88,18 @@ class Pokedex:
         text_rect = text_surface.get_rect()
         if align == "center":
             text_rect.center = container_rect.center #align
-        elif align == "midleft":
-            text_rect.midleft = container_rect.midleft
+        elif align == "bottomleft":
+            text_rect.bottomleft = container_rect.bottomleft
             text_rect.x += padding[0] #add margin 
+            text_rect.y -= padding[1]
+        elif align == "topright":
+            text_rect.topright = container_rect.topright
+            text_rect.x -= padding[0]
             text_rect.y += padding[1]
-        elif align == "bottomright":
-            text_rect.midright = container_rect.midright
-            # text_rect.x -= padding[0]
-            # text_rect.y += padding[1]
 
-        elif align == "midtop":
-            text_rect.midtop = container_rect.midtop
+        elif align == "topleft":
+            text_rect.topleft = container_rect.topleft
+            text_rect.x += padding[0]
             text_rect.y += padding[1]
             # text_rect.x += padding[0]
         surface.blit(text_surface, text_rect)
@@ -142,12 +143,12 @@ class Pokedex:
             pygame.draw.rect(container, (185, 185, 185), (0, relative_y, 630, button_height), border_radius = 10) 
             rect = pygame.Rect((0, relative_y, 630, button_height)) 
             name_pokemon = f"{p.get_name()}"
-            type_pokemon = f"{p.get_types()}"
+            type_pokemon = " / ".join(p.get_types()) #display the types without the brackets
             stats_pokemon = f"ATT : {p.get_attack()} DEF : {p.get_defense()} HP : {p.get_hp()} LVL : {p.get_level()} XP :{p.get_xp()}"
             
-            self.draw_text_aligned(container, name_pokemon, name_font, (0, 0, 0), rect, "midtop", padding=(0, 10))
-            self.draw_text_aligned(container, type_pokemon, stats_font, (0, 0, 0), rect, "bottomright", padding= any)
-            self.draw_text_aligned(container, stats_pokemon, stats_font, (0, 0, 0), rect, "midleft", padding=(10,20))
+            self.draw_text_aligned(container, name_pokemon, name_font, (0, 0, 0), rect, "topleft", padding=(10, 10))
+            self.draw_text_aligned(container, type_pokemon, stats_font, (0, 0, 0), rect, "topright", padding= (10,25))
+            self.draw_text_aligned(container, stats_pokemon, stats_font, (0, 0, 0), rect, "bottomleft", padding=(10,10))
 
             # surface_text_name = font.render(name_pokemon, True, (0, 0, 0))
             # surface_text_type = font.render(type_poekmon, True, (0, 0, 0)) 
