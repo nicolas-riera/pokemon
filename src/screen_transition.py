@@ -6,6 +6,7 @@ import pygame
 
 def screen_transition(screen, clock, state):
 
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_WAIT)
 
     pygame.mixer.music.pause()
