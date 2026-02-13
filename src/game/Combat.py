@@ -1,7 +1,9 @@
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA
-from src.pokemon.Pokemon import Pokemon
-
 import random
+import pygame
+
+from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN
+from src.pokemon.Pokemon import Pokemon
+from src.game.Combat_draw import Combat_draw
 
 class Combat:
     def __init__(self):
@@ -37,17 +39,25 @@ class Combat:
     def events(self):
         pass
 
-    def draw(self):
-        pass
+    def draw(self, screen):
+        Combat_draw.display_pokemon(self.ally, self.enemy, screen)
 
-    def logic(self, ally):
+    def logic(self, ally, escpressed):
         if self.first_run:
+            self.ally = ally
             self.turn_of_ally = True
             self.first_run = False
             self.enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
 
-        if self.state == "game" and len(ally.get_types()) == 1:
-            self.__attack(ally, self.enemy)
+        if escpressed:
+            pygame.mixer.music.pause()
+            pygame.mixer.music.unload()
+            pygame.mixer.Sound(SFX_RUN).play()
+            self.music = None
+            self.state = "menu"
+        
+        # if self.state == "game" and len(ally.get_types()) == 1:
+        #     self.__attack(ally, self.enemy)
 
 
         # if self.state == "pre_attack":

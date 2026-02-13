@@ -72,7 +72,9 @@ class PygameApp:
         self.clock.tick(60)
 
     def logic(self):
+        self.changed_state = False
         prev_state = self.state
+
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
         elif self.state in ["game", "choose_attack", "pre_attack"]:
@@ -83,9 +85,12 @@ class PygameApp:
         if prev_state != self.state :
             screen_transition(self.screen)
             self.reset_all_class()
-
+            self.changed_state = True
+            
     def loop(self):
         while self.running:
             self.events()
-            self.draw()
             self.logic()
+            if not self.changed_state:
+                self.draw()
+            
