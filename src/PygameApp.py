@@ -1,7 +1,7 @@
 import pygame
 import os
 
-from src.assets_loading import BASE_DIR, TITLE_MUSIC
+from src.assets_loading import BASE_DIR, TITLE_MUSIC, BATTLE_MUSIC
 from src.pokemon.Pokemon import Pokemon
 from src.pokemon.Pokedex import Pokedex
 from src.Menu import Menu
@@ -53,11 +53,12 @@ class PygameApp:
                     pygame.mixer.music.unload()
                     pygame.mixer.music.load(TITLE_MUSIC)
                     pygame.mixer.music.play(-1)
-            elif self.state == "pokedex":
-                pass # no intro music  
-            else:
-                pygame.mixer.music.pause()
-                pygame.mixer.music.unload()
+            elif self.state in ["game", "choose_attack", "pre_attack"]:
+                if event.type == MUSIC_END:
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.unload()
+                    pygame.mixer.music.load(BATTLE_MUSIC)
+                    pygame.mixer.music.play(-1)
 
     def draw(self):
         self.screen.fill("white")
@@ -83,7 +84,7 @@ class PygameApp:
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked)
 
         if prev_state != self.state :
-            screen_transition(self.screen)
+            screen_transition(self.screen, self.clock, self.state)
             self.reset_all_class()
             self.changed_state = True
             

@@ -24,9 +24,10 @@ class Combat:
     @staticmethod
     def __select_random_pokemon_from_POKEMON_DATA(ally):
         pokemon = Pokemon()
-
-        random_pokemon_dict = random.choice(list(POKEMON_DATA.values()))
+        random_id, random_pokemon_dict = random.choice(list(POKEMON_DATA.items()))
+        
         pokemon.load_from_POKEMON_DATA_dict(random_pokemon_dict)
+        pokemon.set_id(random_id)
         pokemon.set_level(random.randint(
             ally.get_level() - 1, ally.get_level() + 1)
         )
@@ -43,6 +44,7 @@ class Combat:
         Combat_draw.display_pokemon(self.ally, self.enemy, screen)
 
     def logic(self, ally, escpressed):
+
         if self.first_run:
             self.ally = ally
             self.turn_of_ally = True
