@@ -52,6 +52,7 @@ class Pokedex:
                 pokemon_info = POKEMON_DATA[target_id]
 
                 p = Pokemon(pokemon_info["name"])
+                p.set_id(target_id)
                 p.set_types(pokemon_info["type"])
                 p.set_attack(pokemon_info["attack"])
                 p.set_defense(pokemon_info["defense"])

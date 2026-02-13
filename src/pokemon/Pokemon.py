@@ -7,6 +7,7 @@ class Pokemon:
         self.__hp = None
         self.__level = 1
         self.__xp = 0
+        self.__id = ""
 
     def load_from_POKEMON_DATA_dict(self, dict):
         self.set_name(dict["name"])
@@ -44,6 +45,9 @@ class Pokemon:
     
     def get_xp(self):
         return self.__xp
+
+    def get_id(self):
+        return self.__id
     
     def set_name(self, name):
         self.__name = name
@@ -65,3 +69,6 @@ class Pokemon:
     
     def set_xp(self, xp):
         self.__xp = xp
+    
+    def set_id(self, str_id):
+        self.__id = str_id
