@@ -12,7 +12,7 @@ class Combat_draw:
 
         ally_sprite = pygame.image.load(os.path.join(BASE_DIR, "..", "..", "assets", "img", "pokemon_sprites", "back", f"{ally.get_id()}.png"))
         ally_sprite_scaled = pygame.transform.scale(ally_sprite, (200, 200))
-        ally_sprite_rect = ally_sprite.get_rect(center=(110, 400))
+        ally_sprite_rect = ally_sprite.get_rect(center=(120, 400))
         screen.blit(ally_sprite_scaled, ally_sprite_rect)
 
         enemy_sprite = pygame.image.load(os.path.join(BASE_DIR, "..", "..", "assets", "img", "pokemon_sprites", "front", f"{enemy.get_id()}.png"))
@@ -35,7 +35,23 @@ class Combat_draw:
         screen.blit(ally_level_text, (360, 460))
         ally_hp_text = font[1].render(f"HP : {ally.get_hp()}", True, (0, 0, 0))
         screen.blit(ally_hp_text, (360, 490))
+        ally_type_text = font[1].render(" / ".join(ally.get_types()), True, (0, 0, 0))
+        screen.blit(ally_type_text, (360, 520))
 
+    @staticmethod
+    def display_enemy_block(enemy, screen, font):
+        
+        pygame.draw.line(screen, (0, 0, 0), (72, 160), (417, 160), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (72, 300), (417, 300), width=5)
 
+        pygame.draw.line(screen, (0, 0, 0), (72, 160), (72, 300), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (417, 160), (417, 300), width=5)
 
-
+        enemy_name_text = font[1].render(enemy.get_name(), True, (0, 0, 0))
+        screen.blit(enemy_name_text, (81, 170))
+        enemy_level_text = font[1].render(f"LVL : {enemy.get_level()}", True, (0, 0, 0))
+        screen.blit(enemy_level_text, (81, 200))
+        enemy_hp_text = font[1].render(f"HP : {enemy.get_hp()}", True, (0, 0, 0))
+        screen.blit(enemy_hp_text, (81, 230))
+        enemy_type_text = font[1].render(" / ".join(enemy.get_types()), True, (0, 0, 0))
+        screen.blit(enemy_type_text, (81, 260))
