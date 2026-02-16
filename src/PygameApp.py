@@ -20,7 +20,7 @@ class PygameApp:
         self.clock = pygame.time.Clock()
         self.running = True
         self.pokemon_objects = []
-        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), )
+        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
         self.reset_all_class()
         pygame.mixer.music.set_endevent(MUSIC_END)
@@ -67,7 +67,7 @@ class PygameApp:
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
         if self.state in ["game", "choose_attack", "pre_attack"]:
-            self.combat.draw(self.screen)
+            self.combat.draw(self.screen, self.font)
 
         pygame.display.flip()
         self.clock.tick(60)

@@ -28,9 +28,9 @@ class Combat:
         
         pokemon.load_from_POKEMON_DATA_dict(random_pokemon_dict)
         pokemon.set_id(random_id)
-        pokemon.set_level(random.randint(
+        pokemon.set_level(max(1, random.randint(
             ally.get_level() - 1, ally.get_level() + 1)
-        )
+        ))
 
         return pokemon
 
@@ -40,8 +40,11 @@ class Combat:
     def events(self):
         pass
 
-    def draw(self, screen):
+    def draw(self, screen, font):
         Combat_draw.display_pokemon(self.ally, self.enemy, screen)
+        Combat_draw.display_ally_block(self.ally, screen, font)
+
+        print(pygame.mouse.get_pos())
 
     def logic(self, ally, escpressed):
 
