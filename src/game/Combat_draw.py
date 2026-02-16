@@ -55,3 +55,15 @@ class Combat_draw:
         screen.blit(enemy_hp_text, (81, 230))
         enemy_type_text = font[1].render(" / ".join(enemy.get_types()), True, (0, 0, 0))
         screen.blit(enemy_type_text, (81, 260))
+
+    @staticmethod
+    def display_main_text_block(screen):
+
+        pygame.draw.line(screen, (0, 0, 0), (20, 600), (780, 600), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (20, 780), (780, 780), width=5)
+
+        pygame.draw.line(screen, (0, 0, 0), (20, 600), (20, 780), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (780, 600), (780, 780), width=5)
+
+
+

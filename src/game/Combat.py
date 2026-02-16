@@ -44,8 +44,7 @@ class Combat:
         Combat_draw.display_pokemon(self.ally, self.enemy, screen)
         Combat_draw.display_ally_block(self.ally, screen, font)
         Combat_draw.display_enemy_block(self.enemy, screen, font)
-
-        print(pygame.mouse.get_pos())
+        Combat_draw.display_main_text_block(screen)
 
     def logic(self, ally, escpressed):
 
