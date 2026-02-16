@@ -58,3 +58,25 @@ SFX_SWAP = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_SWAP.mp3"
 
 # Used when pressing esc
 SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.mp3")
+
+# Combat
+HIT_NORMAL_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_normal.mp3")
+HIT_SUPER_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_super.mp3")
+HIT_WEAK_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_weak.mp3")
+
+BUG_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "bug.mp3")
+DARK_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "dark.mp3")
+DRAGON_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "dragon.mp3")
+ELECTRIC_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "electric.mp3")
+FAIRY_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "fairy.mp3")
+FIRE_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "fire.mp3")
+FLYING_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "flying.mp3")
+GHOST_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "ghost.mp3")
+GRASS_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "grass.mp3")
+GROUND_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "ground.mp3")
+ICE_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "ice.mp3")
+POISON_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "poison.mp3")
+PSYCHIC_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "psychic.mp3")
+ROCK_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "rock.mp3")
+STEEL_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "steel.mp3")
+WATER_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "water.mp3")
