@@ -44,12 +44,15 @@ class Combat:
 
     def draw(self, screen, font):
 
-        Combat_draw.display_pokemon(self.ally, self.enemy, screen)
-        Combat_draw.display_ally_block(self.ally, screen, font)
-        Combat_draw.display_enemy_block(self.enemy, screen, font)
+        Combat_draw.display_pokemon(self.ally, self.enemy, screen, self.start_timer)
+        
+        if time.monotonic() - self.start_timer > 1:
+            Combat_draw.display_ally_block(self.ally, screen, font)
+            Combat_draw.display_enemy_block(self.enemy, screen, font)
+
         Combat_draw.display_main_text_block(screen)
 
-        if time.monotonic() - self.start_timer < 3:
+        if time.monotonic() - self.start_timer < 4:
             draw_text_block(screen, f"A wild {self.enemy.get_name()} has appeared!", font)
         
 
