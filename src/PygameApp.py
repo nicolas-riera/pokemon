@@ -32,7 +32,8 @@ class PygameApp:
 
     def events(self):
         self.escpressed = False
-        self.mouseclicked = False
+        self.mouseclicked_left = False
+        self.mouseclicked_right = False
 
         for event in pygame.event.get():
 
@@ -40,8 +41,10 @@ class PygameApp:
                 self.running = False
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self.mouseclicked = True
-
+                self.mouseclicked_left = True
+            
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                self.mouseclicked_right = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.escpressed = True 
@@ -77,11 +80,11 @@ class PygameApp:
         prev_state = self.state
 
         if self.state == "menu":
-            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
+            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state)
         elif self.state in ["game", "choose_attack", "pre_attack"]:
             self.state = self.combat.logic(self.pokedex.pokedex_objects[0], self.escpressed)
         elif self.state == "pokedex":
-            self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked)
+            self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked_left, self.mouseclicked_right)
 
         if prev_state != self.state :
             screen_transition(self.screen, self.clock, self.state)
