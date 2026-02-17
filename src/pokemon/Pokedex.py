@@ -170,8 +170,10 @@ class Pokedex:
         
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
+        # print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
-    def pokedex_logic(self, escpressed, state, mouseclicked):
+
+    def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right):
         """
         Method managing pokedex inputs
         param escpressed : get escape input
@@ -202,9 +204,24 @@ class Pokedex:
             # Create a Rect matching the one drawn in draw_pokedex
             button_rect = pygame.Rect(85, position_y, 630, button_height)
             if button_rect.collidepoint(pygame.mouse.get_pos()):
-                if mouseclicked:
+                if mouseclicked_left:
                     pygame.mixer.Sound(SFX_SWAP).play()
-                    print(f"Clicked on {p.get_name()}")
+                    print(f"Clicked on left {p.get_name()}") # FOR DEBUG PURPOSE DO NOT DELETE 
+                elif mouseclicked_right:
+                    print(f"Clicked on right {p.get_name()}")
+
+                    key_to_remove = None
+
+                    for key, attributes in self.pokedex_data.items(): # iterate through both keys and values in pokedex data 
+                        if attributes['id'] == p.get_id(): # if the id of pokemon we clicked on we save it 
+                            key_to_remove = key
+                            break
+                    
+                    if key_to_remove: # if an id we clicked on is true we delete the whole index 
+                        del self.pokedex_data[key_to_remove]
+                        # write save and dispaly
+                        self.write_json()
+                        self.load_pokedex_objects() 
                 else:
                     hover = True
             position_y += item_height
