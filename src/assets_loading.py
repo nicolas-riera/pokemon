@@ -59,6 +59,9 @@ SFX_SWAP = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_SWAP.mp3"
 # Used when pressing esc
 SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.mp3")
 
+# Used when deleting pokemon from pokedex
+SFX_WITHDRAW_DEPOSIT = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_WITHDRAW_DEPOSIT.mp3")
+
 # Combat
 HIT_NORMAL_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_normal.mp3")
 HIT_SUPER_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_super.mp3")
