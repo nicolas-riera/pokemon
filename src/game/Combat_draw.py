@@ -67,4 +67,33 @@ class Combat_draw:
         pygame.draw.line(screen, (0, 0, 0), (780, 600), (780, 780), width=5)
 
 
+    @staticmethod
+    def display_choose_action_block(screen, font):
 
+        pygame.draw.line(screen, (0, 0, 0), (420, 610), (770, 610), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (420, 770), (770, 770), width=5)
+
+        pygame.draw.line(screen, (0, 0, 0), (420, 610), (420, 770), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (770, 610), (770, 770), width=5)
+
+        ack_text = font[0].render("Attack", True, (0, 0, 0))
+        screen.blit(ack_text, (483, 630))
+        run_text = font[0].render("Run", True, (0, 0, 0))
+        screen.blit(run_text, (483, 680))
+
+    @staticmethod
+    def display_choose_attack_type(screen, font, ally):
+        
+        pygame.draw.line(screen, (0, 0, 0), (320, 610), (770, 610), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (320, 770), (770, 770), width=5)
+
+        pygame.draw.line(screen, (0, 0, 0), (320, 610), (320, 770), width=5)
+        pygame.draw.line(screen, (0, 0, 0), (770, 610), (770, 770), width=5)
+
+        type1_text = font[0].render(ally.get_types()[0].capitalize(), True, (0, 0, 0))
+        screen.blit(type1_text, (383, 625))
+        type2_text = font[0].render(ally.get_types()[1].capitalize(), True, (0, 0, 0))
+        screen.blit(type2_text, (383, 675))
+        back_text = font[0].render("Back", True, (0, 0, 0))
+        screen.blit(back_text, (383, 725))
+        
