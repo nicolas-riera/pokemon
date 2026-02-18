@@ -89,7 +89,7 @@ class Combat:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                     if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
-                        pass # temp
+                        self.__state = "choose_attack_type"
                     else:
                         self.__run()
                 else:

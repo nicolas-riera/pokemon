@@ -87,7 +87,7 @@ class PygameApp:
         elif self.state == "pokedex":
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked_left, self.mouseclicked_right)
 
-        if prev_state != self.state and self.state not in ["choose_action", "choose_attack_type"]:
+        if prev_state != self.state and self.state not in self.gamestates[1:]:
             screen_transition(self.screen, self.clock, self.state)
             self.reset_all_class()
             self.changed_state = True
