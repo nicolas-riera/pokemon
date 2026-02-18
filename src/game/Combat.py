@@ -2,7 +2,7 @@ import random
 import pygame
 import time
 
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB
+from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR
 from src.pokemon.Pokemon import Pokemon
 from src.game.Combat_draw import Combat_draw
 from src.game.game_main_text_rendering import draw_text_block
@@ -63,7 +63,11 @@ class Combat:
         if self.__state == "game":
             draw_text_block(screen, f"A wild {self.__enemy.get_name()} has appeared!", font)
         elif self.__state == "choose_action":
-            Combat_draw.display_choose_action_block(screen, font)    
+            Combat_draw.display_choose_action_block(screen, font)   
+            if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (440, 630)) 
+            elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (440, 680))  
 
     def logic(self, ally, escpressed, mouseclicked_left):
 
