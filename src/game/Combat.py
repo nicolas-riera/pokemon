@@ -13,8 +13,15 @@ class Combat:
         self.__ally = None
         self.__enemy = None
         self.__state = "game"
-        self.__ack_button = pygame.Rect((473, 628, 187, 38))
+
+        # choose_action
+        self.__ack_button = pygame.Rect((473, 629, 187, 38))
         self.__run_button = pygame.Rect((473, 679, 88, 38))
+
+        # choose_attack_type
+        self.__type1_button = pygame.Rect((370, 624, 300, 38))
+        self.__type2_button = pygame.Rect((370, 674, 300, 38))
+        self.__back_button = pygame.Rect((370, 724, 130, 38))
 
     @staticmethod
     def __calculate_attack_mult(attack_type:str, enemy:object):
@@ -68,6 +75,14 @@ class Combat:
                 screen.blit(CURSOR, (440, 630)) 
             elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (440, 680))  
+        elif self.__state == "choose_attack_type":
+            Combat_draw.display_choose_attack_type(screen, font, self.__ally)
+            if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (340, 625)) 
+            elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (340, 675)) 
+            elif self.__back_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (340, 725))  
 
     def logic(self, ally, escpressed, mouseclicked_left):
 
@@ -92,6 +107,22 @@ class Combat:
                         self.__state = "choose_attack_type"
                     else:
                         self.__run()
+                else:
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            else:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        
+        elif self.__state == "choose_attack_type":
+            if self.__type1_button.collidepoint(pygame.mouse.get_pos()) or self.__type2_button.collidepoint(pygame.mouse.get_pos()) or self.__back_button.collidepoint(pygame.mouse.get_pos()):
+                if mouseclicked_left:
+                    pygame.mixer.Sound(SFX_PRESS_AB).play()
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+                    if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
+                        pass #attack type 1
+                    elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+                        pass #attack type 2
+                    else:
+                        self.__state = "choose_action"
                 else:
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
