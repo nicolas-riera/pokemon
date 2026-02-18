@@ -20,7 +20,6 @@ class Pokedex:
         self.pokemons_per_page = 4 # amount of pokemon per page to be changed later
         self.music = None
         self.font_path = os.path.join(BASE_DIR, "..", "..", "assets", "font", "pokemon_generation_1.ttf")
-
         # we load the data when creating the class to not do it again
         self.load_json()
         self.load_pokedex_objects()
@@ -114,7 +113,7 @@ class Pokedex:
     def draw_pokedex(self, screen, font):
         screen.blit(POKEDEX_BACKGROUND, (0, 0))
         
-        # Create a Surface (width, height) and fill it instead of using the screen a surface later on
+        # Create a Surface and fill it instead of using the screen a surface later on
         container_height = 500
         container = pygame.Surface((630, container_height))
 
@@ -146,8 +145,12 @@ class Pokedex:
             #     border_radius=20      # radius of the corners
             # )
             
+            color = (185, 185, 185)
+            if p == self.hovered_pokemon:
+                color = (216, 40, 0)
+
             # draw on container using relative coordinates (x=0, y=relative_y) to make it modular
-            pygame.draw.rect(container, (185, 185, 185), (0, relative_y, 630, button_height), border_radius = 10) 
+            pygame.draw.rect(container, color, (0, relative_y, 630, button_height), border_radius = 10) 
             rect = pygame.Rect((0, relative_y, 630, button_height))
             
             name_pokemon = f"{p.get_name()}"
@@ -199,6 +202,7 @@ class Pokedex:
         button_height = item_height - 10
         position_y = 145
         hover = False
+        self.hovered_pokemon = None
         
         for p in pokemons_displayed:
             # Create a Rect matching the one drawn in draw_pokedex
@@ -224,11 +228,11 @@ class Pokedex:
                         self.load_pokedex_objects() 
                 else:
                     hover = True
+                    self.hovered_pokemon = p
             position_y += item_height
 
         if hover:
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)  
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
         return state
