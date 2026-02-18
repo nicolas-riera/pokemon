@@ -22,6 +22,7 @@ class PygameApp:
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
+        self.gamestates = ["game", "choose_action", "choose_attack_type"]
         self.reset_all_class()
         pygame.mixer.music.set_endevent(MUSIC_END)
 
@@ -56,7 +57,7 @@ class PygameApp:
                     pygame.mixer.music.unload()
                     pygame.mixer.music.load(TITLE_MUSIC)
                     pygame.mixer.music.play(-1)
-            elif self.state in ["game", "choose_attack", "pre_attack"]:
+            elif self.state in self.gamestates:
                 if event.type == MUSIC_END:
                     pygame.mixer.music.pause()
                     pygame.mixer.music.unload()
@@ -69,7 +70,7 @@ class PygameApp:
             self.menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
-        if self.state in ["game", "choose_attack", "pre_attack"]:
+        if self.state in self.gamestates:
             self.combat.draw(self.screen, self.font)
 
         pygame.display.flip()
@@ -81,12 +82,12 @@ class PygameApp:
 
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state)
-        elif self.state in ["game", "choose_attack", "pre_attack"]:
-            self.state = self.combat.logic(self.pokedex.pokedex_objects[0], self.escpressed)
+        elif self.state in self.gamestates:
+            self.state = self.combat.logic(self.pokedex.pokedex_objects[0], self.escpressed, self.mouseclicked_left)
         elif self.state == "pokedex":
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked_left, self.mouseclicked_right)
 
-        if prev_state != self.state :
+        if prev_state != self.state and self.state not in ["choose_action", "choose_attack_type"]:
             screen_transition(self.screen, self.clock, self.state)
             self.reset_all_class()
             self.changed_state = True
