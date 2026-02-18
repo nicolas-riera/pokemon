@@ -58,6 +58,7 @@ class Pokedex:
                 p.set_hp(instance_val["hp"])
                 p.set_level(instance_val["level"])
                 p.set_xp(instance_val["xp"])
+                p.set_in_use(instance_val["in_use"])
                 self.pokedex_objects.append(p)
 
     def add_pokemon_to_pokedex(self, pokemon_id, hp, level, xp):
@@ -71,7 +72,8 @@ class Pokedex:
             "id": pokemon_id,
             "hp": hp,
             "level": level,
-            "xp": xp
+            "xp": xp,
+            "in_use": False
         }
         self.pokedex_data[next_index] = new_pokemon # set our new pokemon in the next index in pokemon data 
 
@@ -147,7 +149,9 @@ class Pokedex:
             
             color = (185, 185, 185)
             if p == self.hovered_pokemon:
-                color = (216, 40, 0)
+                color = (94, 113, 106) # (216, 40, 0)
+            elif p.get_in_use():
+                color = (56, 128, 114)
 
             # draw on container using relative coordinates (x=0, y=relative_y) to make it modular
             pygame.draw.rect(container, color, (0, relative_y, 630, button_height), border_radius = 10) 
@@ -211,6 +215,13 @@ class Pokedex:
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_SWAP).play()
                     print(f"Clicked on left {p.get_name()}") # FOR DEBUG PURPOSE DO NOT DELETE 
+                    
+                    p.set_in_use(not p.get_in_use()) #toggle to invert the boolean state
+                    for key, val in self.pokedex_data.items():
+                        if val["id"] == p.get_id():
+                            self.pokedex_data[key]["in_use"] = p.get_in_use()
+                            break
+                    self.write_json()
                 elif mouseclicked_right:
                     print(f"Clicked on right {p.get_name()}")
                     pygame.mixer.Sound(SFX_WITHDRAW_DEPOSIT).play()
