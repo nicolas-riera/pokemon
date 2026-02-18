@@ -2,7 +2,7 @@ import os
 import pygame
 import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK, SFX_WITHDRAW_DEPOSIT
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -213,7 +213,7 @@ class Pokedex:
                     print(f"Clicked on left {p.get_name()}") # FOR DEBUG PURPOSE DO NOT DELETE 
                 elif mouseclicked_right:
                     print(f"Clicked on right {p.get_name()}")
-
+                    pygame.mixer.Sound(SFX_WITHDRAW_DEPOSIT).play()
                     key_to_remove = None
 
                     for key, attributes in self.pokedex_data.items(): # iterate through both keys and values in pokedex data 
