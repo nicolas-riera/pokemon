@@ -34,7 +34,7 @@ pyinstaller main.py --onefile --noconsole --icon=assets/img/logo.ico --hidden-im
 
 On ```--add-data```, replace ";" by ":" if you are on MacOS or Linux.
 
-#Architecture
+# Architecture
 
 ```mermaid
 
