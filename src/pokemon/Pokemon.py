@@ -8,6 +8,7 @@ class Pokemon:
         self.__level = 1
         self.__xp = 0
         self.__id = ""
+        self.__in_use = False
 
     def load_from_POKEMON_DATA_dict(self, dict):
         self.set_name(dict["name"])
@@ -49,6 +50,9 @@ class Pokemon:
     def get_id(self):
         return self.__id
     
+    def get_in_use(self):
+        return self.__in_use
+    
     def set_name(self, name):
         self.__name = name
     
@@ -72,3 +76,6 @@ class Pokemon:
     
     def set_id(self, str_id):
         self.__id = str_id
+    
+    def set_in_use(self, in_use):
+        self.__in_use = in_use
