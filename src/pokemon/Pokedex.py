@@ -17,7 +17,7 @@ class Pokedex:
         self.pokedex_data = {} #dict to save our pokemons
         self.pokedex_objects = []
         self.page_index = 0
-        self.pokemons_per_page = 4 # amount of pokemon per page to be changed later
+        self.pokemons_per_page = 6 # amount of pokemon per page to be changed later
         self.music = None
         self.font_path = os.path.join(BASE_DIR, "..", "..", "assets", "font", "pokemon_generation_1.ttf")
         # we load the data when creating the class to not do it again
@@ -177,7 +177,8 @@ class Pokedex:
         
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
-        # print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
+        pygame.draw.circle(screen,())
+        print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
 
     def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right):

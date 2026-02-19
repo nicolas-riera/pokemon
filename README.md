@@ -49,7 +49,6 @@ PygameApp *-- Pokedex : creates
 PygameApp *-- Combat : creates
 
 
-%% AI-Deduced Relationships (What Pyreverse missed!)
 
 Pokedex o-- Pokemon : manages list of (pokedex_objects)
 
