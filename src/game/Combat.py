@@ -13,6 +13,8 @@ class Combat:
         self.__ally = None
         self.__enemy = None
         self.__state = "game"
+        self.__ally_attack_type = None
+        self.__enemy_attack_type = None
 
         # choose_action
         self.__ack_button = pygame.Rect((473, 629, 187, 38))
@@ -25,9 +27,9 @@ class Combat:
 
     @staticmethod
     def __calculate_attack_mult(attack_type:str, enemy:object):
-        mult = 1
+        mult = 1.0
         for def_type in enemy.get_types():
-            mult *= POKEMONS_TYPE_STATS[attack_type][def_type]
+            mult *= POKEMONS_TYPE_STATS[attack_type.upper()][def_type.upper()]
 
         return mult
     
@@ -45,7 +47,8 @@ class Combat:
         return pokemon
 
     def __attack(self, src, dest):
-        dest.receive_attack(src.get_attack())
+        src.attack(dest, self.__calculate_attack_mult(self.__attack_type, dest) * src.get_attack())
+
 
     def events(self):
         pass
@@ -85,7 +88,6 @@ class Combat:
                 screen.blit(CURSOR, (340, 725))  
 
     def logic(self, ally, escpressed, mouseclicked_left):
-
         if self.__first_run:
             self.__ally = ally
             self.__first_run = False
@@ -118,15 +120,21 @@ class Combat:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                     if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
-                        pass #attack type 1
+                        self.__attack_type = self.__ally.get_types()[0]
+                        self.__attack(self.__ally, self.__enemy)
+                        # self.__state = "ally_attacking"
                     elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
-                        pass #attack type 2
+                        self.__attack_type = self.__ally.get_types()[1]
+                        self.__attack(self.__ally, self.__enemy)
+                        # self.__state = "ally_attacking"
                     else:
                         self.__state = "choose_action"
                 else:
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
+        
+        elif self.__state == "ally_attacking":
+            pass
 
         return self.__state

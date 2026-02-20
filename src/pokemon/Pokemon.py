@@ -22,8 +22,8 @@ class Pokemon:
 
         return False
 
-    def receive_attack(self, hp):
-        self.set_hp(self.get_hp() - hp)
+    def attack(self, enemy, hp):
+        enemy.set_hp(enemy.get_hp() - hp)
 
     def get_name(self):
         return self.__name
