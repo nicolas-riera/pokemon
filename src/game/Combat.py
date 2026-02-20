@@ -4,7 +4,7 @@ import time
 
 from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR
 from src.pokemon.Pokemon import Pokemon
-from src.game.Combat_draw import Combat_draw
+from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
 
 class Combat:
@@ -59,24 +59,24 @@ class Combat:
 
     def draw(self, screen, font):
 
-        Combat_draw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
+        CombatDraw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
         
         if time.monotonic() - self.__start_timer > 1:
-            Combat_draw.display_ally_block(self.__ally, screen, font)
-            Combat_draw.display_enemy_block(self.__enemy, screen, font)
+            CombatDraw.display_ally_block(self.__ally, screen, font)
+            CombatDraw.display_enemy_block(self.__enemy, screen, font)
 
-        Combat_draw.display_main_text_block(screen)
+        CombatDraw.display_main_text_block(screen)
 
         if self.__state == "game":
             draw_text_block(screen, f"A wild {self.__enemy.get_name()} has appeared!", font)
         elif self.__state == "choose_action":
-            Combat_draw.display_choose_action_block(screen, font)   
+            CombatDraw.display_choose_action_block(screen, font)   
             if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (440, 630)) 
             elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (440, 680))  
         elif self.__state == "choose_attack_type":
-            Combat_draw.display_choose_attack_type(screen, font, self.__ally)
+            CombatDraw.display_choose_attack_type(screen, font, self.__ally)
             if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 625)) 
             elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):

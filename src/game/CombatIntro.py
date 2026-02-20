@@ -4,7 +4,7 @@ import math
 
 from src.assets_loading import INTRO_BATTLE_MUSIC
 
-class Combat_intro:
+class CombatIntro:
     def __init__(self):
         pass
 
@@ -21,7 +21,7 @@ class Combat_intro:
 
         time_start = time.monotonic()
 
-        Combat_intro.battle_intro_music()
+        CombatIntro.battle_intro_music()
         while time.monotonic() - time_start < 2.8:
 
             for event in pygame.event.get():
