@@ -1,8 +1,9 @@
 import random
 import pygame
 import time
+import os
 
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR
+from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR, POKEMON_SOUND_PATH
 from src.pokemon.Pokemon import Pokemon
 from src.game.Combat_draw import Combat_draw
 from src.game.game_main_text_rendering import draw_text_block
@@ -109,10 +110,15 @@ class Combat:
             self.__ally = ally
             self.__first_run = False
             self.__enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+            self.__enemy_sound = os.path.join(POKEMON_SOUND_PATH, f"{self.__enemy.get_id()}.mp3")
             self.__start_timer = time.monotonic()
 
         if escpressed:
             self.__run()
+
+        elif time.monotonic() - self.__start_timer >= 1.0 and self.__enemy_sound:
+            pygame.mixer.Sound(self.__enemy_sound).play()
+            self.__enemy_sound = None
 
         elif time.monotonic() - self.__start_timer > 4 and self.__state == "game":
             self.__state = "choose_action"
