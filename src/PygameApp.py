@@ -83,7 +83,7 @@ class PygameApp:
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state)
         elif self.state in self.gamestates:
-            self.state = self.combat.logic(self.pokedex.pokedex_objects[0], self.escpressed, self.mouseclicked_left)
+            self.state = self.combat.logic(self.pokedex.pokedex_objects[self.pokedex.get_pokemon_id_in_use()], self.escpressed, self.mouseclicked_left)
         elif self.state == "pokedex":
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked_left, self.mouseclicked_right)
 

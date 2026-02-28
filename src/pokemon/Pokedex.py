@@ -24,6 +24,11 @@ class Pokedex:
         self.load_json()
         self.load_pokedex_objects()
 
+    def get_pokemon_id_in_use(self):
+        for id, values in self.pokedex_data.items():
+            if values["in_use"] == True:
+                return int(id)
+
     def pokedex_music(self):
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(POKEMON_CENTER_MUSIC)
