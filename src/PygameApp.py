@@ -22,7 +22,7 @@ class PygameApp:
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
-        self.gamestates = ["game", "choose_action", "choose_attack_type"]
+        self.gamestates = ["game", "choose_action", "choose_attack_type", "ally_won", "enemy_won"]
         self.reset_all_class()
         pygame.mixer.music.set_endevent(MUSIC_END)
 
