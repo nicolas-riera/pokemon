@@ -77,9 +77,11 @@ class Combat_draw:
         pygame.draw.line(screen, (0, 0, 0), (770, 610), (770, 770), width=5)
 
         ack_text = font[0].render("Attack", True, (0, 0, 0))
-        screen.blit(ack_text, (483, 630))
+        screen.blit(ack_text, (483, 625))
+        run_text = font[0].render("Pokemon", True, (0, 0, 0))
+        screen.blit(run_text, (483, 675))
         run_text = font[0].render("Run", True, (0, 0, 0))
-        screen.blit(run_text, (483, 680))
+        screen.blit(run_text, (483, 725))
 
     @staticmethod
     def display_choose_attack_type(screen, font, ally):
