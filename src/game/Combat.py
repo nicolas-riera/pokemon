@@ -99,7 +99,9 @@ class Combat:
                 screen.blit(CURSOR, (340, 725))  
 
     def logic(self, ally, escpressed, mouseclicked_left):
+        
         self.__check_winner()
+
         if self.__first_run:
             self.__ally = ally
             self.__first_run = False

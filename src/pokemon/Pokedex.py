@@ -177,7 +177,7 @@ class Pokedex:
         
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
-        pygame.draw.circle(screen,())
+        # pygame.draw.circle(screen,())
         print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
 
