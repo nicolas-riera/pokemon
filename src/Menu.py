@@ -13,7 +13,6 @@ class Menu:
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(INTRO_TITLE_MUSIC)
             pygame.mixer.music.play()
-            
 
     def menu_rendering(self, screen, font):
 
@@ -38,7 +37,6 @@ class Menu:
             screen.blit(CURSOR, (190, 500)) 
         elif self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
             screen.blit(CURSOR, (190, 570))
-
 
     def menu_logic(self, escpressed, mouseclicked, state):
 

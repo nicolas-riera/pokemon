@@ -46,9 +46,20 @@ class Combat:
 
         return pokemon
 
+    def __check_winner(self):
+        if self.__ally and self.__enemy:
+            if self.__ally.is_alive() is False:
+                self.__state = "enemy_won"
+                return self.__enemy.get_name()
+
+            elif self.__enemy.is_alive() is False:
+                self.__state = "ally_won"
+                return self.__ally.get_name()
+
+        return None
+
     def __attack(self, src, dest):
         src.attack(dest, self.__calculate_attack_mult(self.__attack_type, dest) * src.get_attack())
-
 
     def events(self):
         pass
@@ -88,6 +99,7 @@ class Combat:
                 screen.blit(CURSOR, (340, 725))  
 
     def logic(self, ally, escpressed, mouseclicked_left):
+        self.__check_winner()
         if self.__first_run:
             self.__ally = ally
             self.__first_run = False
@@ -122,11 +134,11 @@ class Combat:
                     if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
                         self.__attack_type = self.__ally.get_types()[0]
                         self.__attack(self.__ally, self.__enemy)
-                        # self.__state = "ally_attacking"
+                        self.__state = "enemy_attack"
                     elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
                         self.__attack_type = self.__ally.get_types()[1]
                         self.__attack(self.__ally, self.__enemy)
-                        # self.__state = "ally_attacking"
+                        self.__state = "enemy_attack"
                     else:
                         self.__state = "choose_action"
                 else:
@@ -134,7 +146,12 @@ class Combat:
             else:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         
-        elif self.__state == "ally_attacking":
-            pass
+        if self.__state == "enemy_attack":
+            self.__check_winner()
+            self.__attack(self.__enemy, self.__ally)
+            self.__state = "choose_action"
+
+        if self.__state == "enemy_won" or self.__state == "ally_won":
+            return self.__state
 
         return self.__state
