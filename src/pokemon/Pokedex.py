@@ -240,6 +240,12 @@ class Pokedex:
                     
                     if key_to_remove: # if an id we clicked on is true we delete the whole index 
                         del self.pokedex_data[key_to_remove]
+                        temp_dict = {}
+                        for i in range(int(key_to_remove)):
+                            temp_dict[f"{i}"] = self.pokedex_data[f"{i}"]
+                        for i in range(int(key_to_remove), (len(self.pokedex_data))):
+                            temp_dict[f"{i}"] = self.pokedex_data[f"{i+1}"]
+                        self.pokedex_data = temp_dict
                         # write save and dispaly
                         self.write_json()
                         self.load_pokedex_objects() 
