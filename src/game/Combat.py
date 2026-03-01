@@ -97,7 +97,7 @@ class Combat:
             Combat_draw.display_choose_attack_type(screen, font, self.__ally)
             if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 625)) 
-            elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+            elif self.__type2_button.collidepoint(pygame.mouse.get_pos()) and len(self.__ally.get_types()) == 2:
                 screen.blit(CURSOR, (340, 675)) 
             elif self.__back_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 725))  
@@ -140,7 +140,7 @@ class Combat:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         
         elif self.__state == "choose_attack_type":
-            if self.__type1_button.collidepoint(pygame.mouse.get_pos()) or self.__type2_button.collidepoint(pygame.mouse.get_pos()) or self.__back_button.collidepoint(pygame.mouse.get_pos()):
+            if self.__type1_button.collidepoint(pygame.mouse.get_pos()) or (self.__type2_button.collidepoint(pygame.mouse.get_pos()) and len(self.__ally.get_types()) == 2) or self.__back_button.collidepoint(pygame.mouse.get_pos()):
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
@@ -148,7 +148,7 @@ class Combat:
                         self.__attack_type = self.__ally.get_types()[0]
                         self.__attack(self.__ally, self.__enemy)
                         self.__state = "enemy_attack"
-                    elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+                    elif self.__type2_button.collidepoint(pygame.mouse.get_pos()) and len(self.__ally.get_types()) == 2:
                         self.__attack_type = self.__ally.get_types()[1]
                         self.__attack(self.__ally, self.__enemy)
                         self.__state = "enemy_attack"
