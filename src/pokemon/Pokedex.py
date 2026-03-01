@@ -17,7 +17,7 @@ class Pokedex:
         self.pokedex_data = {} #dict to save our pokemons
         self.pokedex_objects = []
         self.page_index = 0
-        self.pokemons_per_page = 6 # amount of pokemon per page to be changed later
+        self.pokemons_per_page = 4 # amount of pokemon per page to be changed later
         self.music = None
         self.font_path = os.path.join(BASE_DIR, "..", "..", "assets", "font", "pokemon_generation_1.ttf")
         # we load the data when creating the class to not do it again
@@ -215,18 +215,28 @@ class Pokedex:
         self.hovered_pokemon = None
         
         for p in pokemons_displayed:
-            # Create a Rect matching the one drawn in draw_pokedex
+            # create a Rect matching the one drawn in draw_pokedex
             button_rect = pygame.Rect(85, position_y, 630, button_height)
             if button_rect.collidepoint(pygame.mouse.get_pos()):
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_SWAP).play()
                     print(f"Clicked on left {p.get_name()}") # FOR DEBUG PURPOSE DO NOT DELETE 
                     
-                    p.set_in_use(not p.get_in_use()) #toggle to invert the boolean state
-                    for key, val in self.pokedex_data.items():
-                        if val["id"] == p.get_id():
-                            self.pokedex_data[key]["in_use"] = p.get_in_use()
-                            break
+                    was_in_use = p.get_in_use() #save the selected pokemon 
+
+                    #go through every pokemon and put them as not used 
+                    for pokemon_obj in self.pokedex_objects:
+                        pokemon_obj.set_in_use(False)
+                    for key in self.pokedex_data.keys():
+                        self.pokedex_data[key]["in_use"] = False
+
+                    # if no pokemon was set in use toggle in use
+                    if not was_in_use:
+                        p.set_in_use(True)
+                        for key, val in self.pokedex_data.items():
+                            if val["id"] == p.get_id():
+                                self.pokedex_data[key]["in_use"] = True
+                                break
                     self.write_json()
                 elif mouseclicked_right:
                     print(f"Clicked on right {p.get_name()}")
