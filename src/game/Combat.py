@@ -17,8 +17,9 @@ class Combat:
         self.__enemy_attack_type = None
 
         # choose_action
-        self.__ack_button = pygame.Rect((473, 629, 187, 38))
-        self.__run_button = pygame.Rect((473, 679, 88, 38))
+        self.__ack_button = pygame.Rect((473, 624, 187, 38))
+        self.__change_pokemon_button = pygame.Rect((473, 674, 220, 38))
+        self.__run_button = pygame.Rect((473, 724, 88, 38))
 
         # choose_attack_type
         self.__type1_button = pygame.Rect((370, 624, 300, 38))
@@ -86,9 +87,11 @@ class Combat:
         elif self.__state == "choose_action":
             Combat_draw.display_choose_action_block(screen, font)   
             if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
-                screen.blit(CURSOR, (440, 630)) 
+                screen.blit(CURSOR, (440, 625)) 
+            elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (440, 675))
             elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
-                screen.blit(CURSOR, (440, 680))  
+                screen.blit(CURSOR, (440, 725))  
         elif self.__state == "choose_attack_type":
             Combat_draw.display_choose_attack_type(screen, font, self.__ally)
             if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
@@ -99,7 +102,9 @@ class Combat:
                 screen.blit(CURSOR, (340, 725))  
 
     def logic(self, ally, escpressed, mouseclicked_left):
+        
         self.__check_winner()
+
         if self.__first_run:
             self.__ally = ally
             self.__first_run = False
@@ -113,12 +118,14 @@ class Combat:
             self.__state = "choose_action"
 
         elif self.__state == "choose_action":
-            if self.__ack_button.collidepoint(pygame.mouse.get_pos()) or self.__run_button.collidepoint(pygame.mouse.get_pos()):
+            if self.__ack_button.collidepoint(pygame.mouse.get_pos()) or self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__run_button.collidepoint(pygame.mouse.get_pos()):
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                     if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
                         self.__state = "choose_attack_type"
+                    elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                        pass #temp
                     else:
                         self.__run()
                 else:
