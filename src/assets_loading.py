@@ -63,6 +63,9 @@ SFX_TINK = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_TINK.mp3"
 SFX_WITHDRAW_DEPOSIT = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_WITHDRAW_DEPOSIT.mp3")
 
 # Combat
+
+POKEMON_SOUND_PATH = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "pokemon_sound")
+
 HIT_NORMAL_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_normal.mp3")
 HIT_SUPER_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_super.mp3")
 HIT_WEAK_SFX = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "attack_sfx", "hit_weak.mp3")
