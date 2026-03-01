@@ -17,11 +17,19 @@ class Combat_intro:
     @staticmethod
     def combat_intro(screen, clock):
 
+        pygame.mouse.set_visible(False)
+
         time_start = time.monotonic()
 
         Combat_intro.battle_intro_music()
         while time.monotonic() - time_start < 2.8:
 
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    raise SystemExit
+                    
             screen.fill("white")
 
             alpha = ((math.sin(time.monotonic() * 10) + 1) / 2) * 255
@@ -33,3 +41,5 @@ class Combat_intro:
 
             pygame.display.flip()
             clock.tick(60)
+
+        pygame.mouse.set_visible(True)

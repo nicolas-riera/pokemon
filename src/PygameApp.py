@@ -20,8 +20,9 @@ class PygameApp:
         self.clock = pygame.time.Clock()
         self.running = True
         self.pokemon_objects = []
-        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), )
+        self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
+        self.gamestates = ["game", "choose_action", "choose_attack_type", "ally_won", "enemy_won"]
         self.reset_all_class()
         pygame.mixer.music.set_endevent(MUSIC_END)
 
@@ -32,7 +33,8 @@ class PygameApp:
 
     def events(self):
         self.escpressed = False
-        self.mouseclicked = False
+        self.mouseclicked_left = False
+        self.mouseclicked_right = False
 
         for event in pygame.event.get():
 
@@ -40,8 +42,10 @@ class PygameApp:
                 self.running = False
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self.mouseclicked = True
-
+                self.mouseclicked_left = True
+            
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                self.mouseclicked_right = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.escpressed = True 
@@ -53,7 +57,7 @@ class PygameApp:
                     pygame.mixer.music.unload()
                     pygame.mixer.music.load(TITLE_MUSIC)
                     pygame.mixer.music.play(-1)
-            elif self.state in ["game", "choose_attack", "pre_attack"]:
+            elif self.state in self.gamestates:
                 if event.type == MUSIC_END:
                     pygame.mixer.music.pause()
                     pygame.mixer.music.unload()
@@ -66,8 +70,8 @@ class PygameApp:
             self.menu.menu_rendering(self.screen, self.font)
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
-        if self.state in ["game", "choose_attack", "pre_attack"]:
-            self.combat.draw(self.screen)
+        if self.state in self.gamestates:
+            self.combat.draw(self.screen, self.font)
 
         pygame.display.flip()
         self.clock.tick(60)
@@ -77,13 +81,13 @@ class PygameApp:
         prev_state = self.state
 
         if self.state == "menu":
-            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked, self.state)
-        elif self.state in ["game", "choose_attack", "pre_attack"]:
-            self.state = self.combat.logic(self.pokedex.pokedex_objects[0], self.escpressed)
+            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state)
+        elif self.state in self.gamestates:
+            self.state = self.combat.logic(self.pokedex.pokedex_objects[self.pokedex.get_pokemon_id_in_use()], self.escpressed, self.mouseclicked_left)
         elif self.state == "pokedex":
-            self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked)
+            self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked_left, self.mouseclicked_right)
 
-        if prev_state != self.state :
+        if prev_state != self.state and self.state not in self.gamestates[1:]:
             screen_transition(self.screen, self.clock, self.state)
             self.reset_all_class()
             self.changed_state = True

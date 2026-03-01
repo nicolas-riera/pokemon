@@ -2,7 +2,7 @@ import os
 import pygame
 import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK, SFX_WITHDRAW_DEPOSIT
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -20,10 +20,14 @@ class Pokedex:
         self.pokemons_per_page = 4 # amount of pokemon per page to be changed later
         self.music = None
         self.font_path = os.path.join(BASE_DIR, "..", "..", "assets", "font", "pokemon_generation_1.ttf")
-
         # we load the data when creating the class to not do it again
         self.load_json()
         self.load_pokedex_objects()
+
+    def get_pokemon_id_in_use(self):
+        for id, values in self.pokedex_data.items():
+            if values["in_use"] == True:
+                return int(id)
 
     def pokedex_music(self):
         if not pygame.mixer.music.get_busy():
@@ -59,6 +63,7 @@ class Pokedex:
                 p.set_hp(instance_val["hp"])
                 p.set_level(instance_val["level"])
                 p.set_xp(instance_val["xp"])
+                p.set_in_use(instance_val["in_use"])
                 self.pokedex_objects.append(p)
 
     def add_pokemon_to_pokedex(self, pokemon_id, hp, level, xp):
@@ -72,7 +77,8 @@ class Pokedex:
             "id": pokemon_id,
             "hp": hp,
             "level": level,
-            "xp": xp
+            "xp": xp,
+            "in_use": False
         }
         self.pokedex_data[next_index] = new_pokemon # set our new pokemon in the next index in pokemon data 
 
@@ -114,7 +120,7 @@ class Pokedex:
     def draw_pokedex(self, screen, font):
         screen.blit(POKEDEX_BACKGROUND, (0, 0))
         
-        # Create a Surface (width, height) and fill it instead of using the screen a surface later on
+        # Create a Surface and fill it instead of using the screen a surface later on
         container_height = 500
         container = pygame.Surface((630, container_height))
 
@@ -146,8 +152,14 @@ class Pokedex:
             #     border_radius=20      # radius of the corners
             # )
             
+            color = (185, 185, 185)
+            if p == self.hovered_pokemon:
+                color = (94, 113, 106) # (216, 40, 0)
+            elif p.get_in_use():
+                color = (56, 128, 114)
+
             # draw on container using relative coordinates (x=0, y=relative_y) to make it modular
-            pygame.draw.rect(container, (185, 185, 185), (0, relative_y, 630, button_height), border_radius = 10) 
+            pygame.draw.rect(container, color, (0, relative_y, 630, button_height), border_radius = 10) 
             rect = pygame.Rect((0, relative_y, 630, button_height))
             
             name_pokemon = f"{p.get_name()}"
@@ -170,8 +182,11 @@ class Pokedex:
         
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
+        # pygame.draw.circle(screen,())
+        print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
-    def pokedex_logic(self, escpressed, state, mouseclicked):
+
+    def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right):
         """
         Method managing pokedex inputs
         param escpressed : get escape input
@@ -197,21 +212,60 @@ class Pokedex:
         button_height = item_height - 10
         position_y = 145
         hover = False
+        self.hovered_pokemon = None
         
         for p in pokemons_displayed:
-            # Create a Rect matching the one drawn in draw_pokedex
+            # create a Rect matching the one drawn in draw_pokedex
             button_rect = pygame.Rect(85, position_y, 630, button_height)
             if button_rect.collidepoint(pygame.mouse.get_pos()):
-                if mouseclicked:
+                if mouseclicked_left:
                     pygame.mixer.Sound(SFX_SWAP).play()
-                    print(f"Clicked on {p.get_name()}")
+                    print(f"Clicked on left {p.get_name()}") # FOR DEBUG PURPOSE DO NOT DELETE 
+                    
+                    was_in_use = p.get_in_use() #save the selected pokemon 
+
+                    #go through every pokemon and put them as not used 
+                    for pokemon_obj in self.pokedex_objects:
+                        pokemon_obj.set_in_use(False)
+                    for key in self.pokedex_data.keys():
+                        self.pokedex_data[key]["in_use"] = False
+
+                    # if no pokemon was set in use toggle in use
+                    if not was_in_use:
+                        p.set_in_use(True)
+                        for key, val in self.pokedex_data.items():
+                            if val["id"] == p.get_id():
+                                self.pokedex_data[key]["in_use"] = True
+                                break
+                    self.write_json()
+                elif mouseclicked_right:
+                    print(f"Clicked on right {p.get_name()}")
+                    pygame.mixer.Sound(SFX_WITHDRAW_DEPOSIT).play()
+                    key_to_remove = None
+
+                    for key, attributes in self.pokedex_data.items(): # iterate through both keys and values in pokedex data 
+                        if attributes['id'] == p.get_id(): # if the id of pokemon we clicked on we save it 
+                            key_to_remove = key
+                            break
+                    
+                    if key_to_remove: # if an id we clicked on is true we delete the whole index 
+                        del self.pokedex_data[key_to_remove]
+                        temp_dict = {}
+                        for i in range(int(key_to_remove)):
+                            temp_dict[f"{i}"] = self.pokedex_data[f"{i}"]
+                        for i in range(int(key_to_remove), (len(self.pokedex_data))):
+                            temp_dict[f"{i}"] = self.pokedex_data[f"{i+1}"]
+                        self.pokedex_data = temp_dict
+                        # write save and dispaly
+                        self.write_json()
+                        self.load_pokedex_objects() 
                 else:
                     hover = True
+                    self.hovered_pokemon = p
             position_y += item_height
 
         if hover:
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)  
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
         return state

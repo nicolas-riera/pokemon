@@ -1,23 +1,36 @@
 import random
 import pygame
+import time
 
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN
+from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR
 from src.pokemon.Pokemon import Pokemon
 from src.game.Combat_draw import Combat_draw
+from src.game.game_main_text_rendering import draw_text_block
 
 class Combat:
     def __init__(self):
-        self.first_run = True
-        self.ally = None
-        self.turn_of_ally = True
-        self.enemy = None
-        self.state = "game"
+        self.__first_run = True
+        self.__ally = None
+        self.__enemy = None
+        self.__state = "game"
+        self.__ally_attack_type = None
+        self.__enemy_attack_type = None
+
+        # choose_action
+        self.__ack_button = pygame.Rect((473, 624, 187, 38))
+        self.__change_pokemon_button = pygame.Rect((473, 674, 220, 38))
+        self.__run_button = pygame.Rect((473, 724, 88, 38))
+
+        # choose_attack_type
+        self.__type1_button = pygame.Rect((370, 624, 300, 38))
+        self.__type2_button = pygame.Rect((370, 674, 300, 38))
+        self.__back_button = pygame.Rect((370, 724, 130, 38))
 
     @staticmethod
     def __calculate_attack_mult(attack_type:str, enemy:object):
-        mult = 1
+        mult = 1.0
         for def_type in enemy.get_types():
-            mult *= POKEMONS_TYPE_STATS[attack_type][def_type]
+            mult *= POKEMONS_TYPE_STATS[attack_type.upper()][def_type.upper()]
 
         return mult
     
@@ -28,45 +41,124 @@ class Combat:
         
         pokemon.load_from_POKEMON_DATA_dict(random_pokemon_dict)
         pokemon.set_id(random_id)
-        pokemon.set_level(random.randint(
-            ally.get_level() - 1, ally.get_level() + 1)
-        )
+        pokemon.set_level(max(1, random.choice(
+            [ally.get_level() - 1, ally.get_level(), ally.get_level() + 1])
+        ))
 
         return pokemon
 
+    def __check_winner(self):
+        if self.__ally and self.__enemy:
+            if self.__ally.is_alive() is False:
+                self.__state = "enemy_won"
+                return self.__enemy.get_name()
+
+            elif self.__enemy.is_alive() is False:
+                self.__state = "ally_won"
+                return self.__ally.get_name()
+
+        return None
+
     def __attack(self, src, dest):
-        dest.receive_attack(src.get_attack())
+        src.attack(dest, self.__calculate_attack_mult(self.__attack_type, dest) * src.get_attack())
 
     def events(self):
         pass
 
-    def draw(self, screen):
-        Combat_draw.display_pokemon(self.ally, self.enemy, screen)
+    def __run(self):
+        pygame.mixer.music.pause()
+        pygame.mixer.music.unload()
+        pygame.mixer.Sound(SFX_RUN).play()
+        self.music = None
+        self.__state = "menu"
 
-    def logic(self, ally, escpressed):
+    def draw(self, screen, font):
 
-        if self.first_run:
-            self.ally = ally
-            self.turn_of_ally = True
-            self.first_run = False
-            self.enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+        Combat_draw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
+        
+        if time.monotonic() - self.__start_timer > 1:
+            Combat_draw.display_ally_block(self.__ally, screen, font)
+            Combat_draw.display_enemy_block(self.__enemy, screen, font)
+
+        Combat_draw.display_main_text_block(screen)
+
+        if self.__state == "game":
+            draw_text_block(screen, f"A wild {self.__enemy.get_name()} has appeared!", font)
+        elif self.__state == "choose_action":
+            Combat_draw.display_choose_action_block(screen, font)   
+            if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (440, 625)) 
+            elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (440, 675))
+            elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (440, 725))  
+        elif self.__state == "choose_attack_type":
+            Combat_draw.display_choose_attack_type(screen, font, self.__ally)
+            if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (340, 625)) 
+            elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (340, 675)) 
+            elif self.__back_button.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(CURSOR, (340, 725))  
+
+    def logic(self, ally, escpressed, mouseclicked_left):
+        
+        self.__check_winner()
+
+        if self.__first_run:
+            self.__ally = ally
+            self.__first_run = False
+            self.__enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+            self.__start_timer = time.monotonic()
 
         if escpressed:
-            pygame.mixer.music.pause()
-            pygame.mixer.music.unload()
-            pygame.mixer.Sound(SFX_RUN).play()
-            self.music = None
-            self.state = "menu"
+            self.__run()
+
+        elif time.monotonic() - self.__start_timer > 4 and self.__state == "game":
+            self.__state = "choose_action"
+
+        elif self.__state == "choose_action":
+            if self.__ack_button.collidepoint(pygame.mouse.get_pos()) or self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__run_button.collidepoint(pygame.mouse.get_pos()):
+                if mouseclicked_left:
+                    pygame.mixer.Sound(SFX_PRESS_AB).play()
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+                    if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
+                        self.__state = "choose_attack_type"
+                    elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                        pass #temp
+                    else:
+                        self.__run()
+                else:
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            else:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         
-        # if self.state == "game" and len(ally.get_types()) == 1:
-        #     self.__attack(ally, self.enemy)
+        elif self.__state == "choose_attack_type":
+            if self.__type1_button.collidepoint(pygame.mouse.get_pos()) or self.__type2_button.collidepoint(pygame.mouse.get_pos()) or self.__back_button.collidepoint(pygame.mouse.get_pos()):
+                if mouseclicked_left:
+                    pygame.mixer.Sound(SFX_PRESS_AB).play()
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+                    if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
+                        self.__attack_type = self.__ally.get_types()[0]
+                        self.__attack(self.__ally, self.__enemy)
+                        self.__state = "enemy_attack"
+                    elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+                        self.__attack_type = self.__ally.get_types()[1]
+                        self.__attack(self.__ally, self.__enemy)
+                        self.__state = "enemy_attack"
+                    else:
+                        self.__state = "choose_action"
+                else:
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            else:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        
+        if self.__state == "enemy_attack":
+            self.__check_winner()
+            self.__attack(self.__enemy, self.__ally)
+            self.__state = "choose_action"
 
+        if self.__state == "enemy_won" or self.__state == "ally_won":
+            return self.__state
 
-        # if self.state == "pre_attack":
-        #     if self.turn_of_ally:
-        #         self.__attack(self.ally, self.enemy)
-        #     else:
-        #         self.__attack(self.enemy, self.enemy)
-
-
-        return self.state
+        return self.__state
