@@ -2,7 +2,7 @@ import os
 import pygame
 import json
 
-from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK, SFX_WITHDRAW_DEPOSIT
+from src.assets_loading import POKEDEX_BACKGROUND, POKEMON_DATA, POKEMON_CENTER_MUSIC, SFX_SWAP, SFX_TINK, SFX_WITHDRAW_DEPOSIT, SFX_PRESS_AB
 from src.pokemon.Pokemon import Pokemon
 from src.pyinstaller.data_path import get_data_path
 
@@ -192,8 +192,8 @@ class Pokedex:
 
         # Dispaly previous button 
         if self.page_index > 0:
-            prev_text = pagination_font.render("<- Precedent", True, (0, 0, 0))
-            screen.blit(prev_text, (85, 777))
+            prev_text = pagination_font.render("<- Previous", True, (0, 0, 0))
+            screen.blit(prev_text, (85, 779))
             
         # Dispaly actual page number 
         page_text = pagination_font.render(f"Page {self.page_index + 1} / {max_pages + 1}", True, (0, 0, 0))
@@ -201,10 +201,8 @@ class Pokedex:
 
         # Display following page
         if self.page_index < max_pages:
-            next_text = font.render("Suivant ->", True, (0, 0, 0))
-            screen.blit(next_text, (600, 777))
-
-        print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
+            next_text = pagination_font.render("Next ->", True, (0, 0, 0))
+            screen.blit(next_text, (600, 779))
 
 
     def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right):
@@ -241,8 +239,7 @@ class Pokedex:
             if button_rect.collidepoint(pygame.mouse.get_pos()):
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_SWAP).play()
-                    print(f"Clicked on left {p.get_name()}") # FOR DEBUG PURPOSE DO NOT DELETE 
-                    
+                                        
                     was_in_use = p.get_in_use() #save the selected pokemon 
 
                     #go through every pokemon and put them as not used 
@@ -295,14 +292,15 @@ class Pokedex:
         if prev_rect.collidepoint(pygame.mouse.get_pos()) and self.page_index > 0:
             hover = True
             if mouseclicked_left:
-                pygame.mixer.Sound(SFX_TINK).play() 
+                pygame.mixer.Sound(SFX_PRESS_AB).play() 
                 self.page_index -= 1 #we go back 
                 
-        if next_rect.collidepoint(pygame.mouse.get_pos()) and self.page_index < max_pages:
+        elif next_rect.collidepoint(pygame.mouse.get_pos()) and self.page_index < max_pages:
             hover = True
             if mouseclicked_left:
-                pygame.mixer.Sound(SFX_TINK).play()
+                pygame.mixer.Sound(SFX_PRESS_AB).play()
                 self.page_index += 1 
+
         if hover:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
