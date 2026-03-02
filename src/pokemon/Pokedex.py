@@ -183,6 +183,27 @@ class Pokedex:
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
         # pygame.draw.circle(screen,())
+        
+
+
+        max_pages = max(0, (len(self.pokedex_objects) - 1) // self.pokemons_per_page) #calculate max pages
+
+        pagination_font = pygame.font.Font(self.font_path, 15)
+
+        # Dispaly previous button 
+        if self.page_index > 0:
+            prev_text = pagination_font.render("<- Precedent", True, (0, 0, 0))
+            screen.blit(prev_text, (85, 777))
+            
+        # Dispaly actual page number 
+        page_text = pagination_font.render(f"Page {self.page_index + 1} / {max_pages + 1}", True, (0, 0, 0))
+        screen.blit(page_text, (607, 64))
+
+        # Display following page
+        if self.page_index < max_pages:
+            next_text = font.render("Suivant ->", True, (0, 0, 0))
+            screen.blit(next_text, (600, 777))
+
         print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
 
@@ -264,6 +285,24 @@ class Pokedex:
                     self.hovered_pokemon = p
             position_y += item_height
 
+
+        max_pages = max(0, (len(self.pokedex_objects) - 1) // self.pokemons_per_page)
+        
+        #make rect for previous and next buttons 
+        prev_rect = pygame.Rect(85, 777, 150, 40)
+        next_rect = pygame.Rect(600, 777, 150, 40)
+        #if button hover previous button
+        if prev_rect.collidepoint(pygame.mouse.get_pos()) and self.page_index > 0:
+            hover = True
+            if mouseclicked_left:
+                pygame.mixer.Sound(SFX_TINK).play() 
+                self.page_index -= 1 #we go back 
+                
+        if next_rect.collidepoint(pygame.mouse.get_pos()) and self.page_index < max_pages:
+            hover = True
+            if mouseclicked_left:
+                pygame.mixer.Sound(SFX_TINK).play()
+                self.page_index += 1 
         if hover:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
