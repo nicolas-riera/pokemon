@@ -52,7 +52,8 @@ class Menu:
                 if self.__play_button.collidepoint(pygame.mouse.get_pos()):
                     state = "game"
                 elif self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                    state = "enemy_pokemon"
+                    # state = "enemy_pokemon"
+                    pass
                 else:
                     state = "pokedex"
             else:
