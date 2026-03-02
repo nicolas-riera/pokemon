@@ -29,7 +29,7 @@ This game includes pokémons from gen 1 and gen 2.
 
 Download the latest release of the executable here: https://github.com/nicolas-riera/pokemon/releases/latest
 
-After downloading it, simply run ```pokemon_[version].exe``` to launch the game.
+After downloading it, simply run ```Pokémon_[version].exe``` to launch the game.
 
 ## Run and Build from source
 
