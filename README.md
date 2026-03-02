@@ -9,6 +9,28 @@
 
 *No part of this project is intended for sale or commercial use. It is provided solely for learning and demonstration purposes.*
 
+## Description
+
+This is a recreation of Pokémon's famous combat system, where you battle against other pokémons, in Python and Pygame.
+
+This game includes pokémons from gen 1 and gen 2.
+
+![screenshot_1](/assets/img/screenshot_1.png)
+
+## Controls
+
+- Left mouse click to interact with most things
+- In **Pokedex**:
+    - Left click to select a pokémon and switch pages (with the arrows)
+    - Right click to delete a pokémon
+- ESC key to go back
+
+## Installation (Windows only)
+
+Download the latest release of the executable here: https://github.com/nicolas-riera/pokemon/releases/latest
+
+After downloading it, simply run ```pokemon_[version].exe``` to launch the game.
+
 ## Run and Build from source
 
 ### Requirements
