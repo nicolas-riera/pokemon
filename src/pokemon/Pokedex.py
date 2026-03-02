@@ -15,9 +15,9 @@ class Pokedex:
         Initialize Pokedex data and pagination setting
         '''
         self.pokedex_data = {} #dict to save our pokemons
-        self.pokedex_objects = []
+        self.pokedex_objects = [] #list to save our objects
         self.page_index = 0
-        self.pokemons_per_page = 4 # amount of pokemon per page to be changed later
+        self.pokemons_per_page = 4 # amount of pokemon per page, can be changed according to prefrences
         self.music = None
         self.font_path = os.path.join(BASE_DIR, "..", "..", "assets", "font", "pokemon_generation_1.ttf")
         # we load the data when creating the class to not do it again
@@ -48,6 +48,9 @@ class Pokedex:
         
 
     def load_pokedex_objects(self):
+        """
+        Load and instantiate Pokemon objects from the pokedex data.
+        """
         self.pokedex_objects.clear() # clear the list to not load the pokemons twice 
         for instance_val in self.pokedex_data.values():
             target_id = instance_val["id"]
@@ -133,28 +136,21 @@ class Pokedex:
         button_height = item_height - 10 
         
         # modular font size
+        # set font size to x % of button height
         name_font_size = int(button_height * 0.30)
         stats_font_size = int(button_height * 0.17)
-        # max function make sure that it never goes under 10 px
-        # set font size to 25% of button height
-        # if self.font_size != target_font_size:
-        #     self.font_size = target_font_size
-        #     self.font = pygame.font.Font(self.font_path, self.font_size)
+
         name_font =  pygame.font.Font(self.font_path, name_font_size)
         stats_font = pygame.font.Font(self.font_path, stats_font_size)
+
         relative_y = 0
+
+        # color change of the box depending on if hovered or clicked 
         for p in pokemons_displayed:
-            # Draw.rect(surface, color, (x position, y position, x width, y width))
-            #     pygame.draw.rect(
-            #     surface,
-            #     (255, 0, 0),          # color
-            #     pygame.Rect(50, 50, 200, 100),  # rect
-            #     border_radius=20      # radius of the corners
-            # )
             
             color = (185, 185, 185)
             if p == self.hovered_pokemon:
-                color = (94, 113, 106) # (216, 40, 0)
+                color = (94, 113, 106) 
             elif p.get_in_use():
                 color = (56, 128, 114)
 
@@ -170,30 +166,19 @@ class Pokedex:
             self.draw_text_aligned(container, type_pokemon, stats_font, (0, 0, 0), rect, "topright", padding= (10,25))
             self.draw_text_aligned(container, stats_pokemon, stats_font, (0, 0, 0), rect, "bottomleft", padding=(10,10))
 
-            # surface_text_name = font.render(name_pokemon, True, (0, 0, 0))
-            # surface_text_type = font.render(type_poekmon, True, (0, 0, 0)) 
-            # surface_text_stats = font.render(stats_pokemon, True, (0, 0, 0)) 
-            # screen.blit(surface_text_name, (315, position_y))
-            # screen.blit(surface_text_type, (90, position_y - 20))
-            # screen.blit(surface_text_stats, (540, position_y - 20))
-
-
             relative_y += item_height # spacing between lines 
         
         # blit the container onto the screen at the specific position
         screen.blit(container, (85, 145))
-        # pygame.draw.circle(screen,())
         
-
-
         max_pages = max(0, (len(self.pokedex_objects) - 1) // self.pokemons_per_page) #calculate max pages
 
         pagination_font = pygame.font.Font(self.font_path, 15)
 
         # Dispaly previous button 
         if self.page_index > 0:
-            prev_text = pagination_font.render("<- Previous", True, (0, 0, 0))
-            screen.blit(prev_text, (85, 779))
+            prev_text = pagination_font.render("<", True, (200, 200, 200))
+            screen.blit(prev_text, (648, 690))
             
         # Dispaly actual page number 
         page_text = pagination_font.render(f"Page {self.page_index + 1} / {max_pages + 1}", True, (0, 0, 0))
@@ -201,8 +186,10 @@ class Pokedex:
 
         # Display following page
         if self.page_index < max_pages:
-            next_text = pagination_font.render("Next ->", True, (0, 0, 0))
-            screen.blit(next_text, (600, 779))
+            next_text = pagination_font.render(">", True, (200, 200, 200))
+            screen.blit(next_text, (690, 690))
+        print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
+
 
 
     def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right):
@@ -286,8 +273,8 @@ class Pokedex:
         max_pages = max(0, (len(self.pokedex_objects) - 1) // self.pokemons_per_page)
         
         #make rect for previous and next buttons 
-        prev_rect = pygame.Rect(85, 777, 150, 40)
-        next_rect = pygame.Rect(600, 777, 150, 40)
+        prev_rect = pygame.Rect(648, 690, 20, 40)
+        next_rect = pygame.Rect(690, 690, 20, 40)
         #if button hover previous button
         if prev_rect.collidepoint(pygame.mouse.get_pos()) and self.page_index > 0:
             hover = True
