@@ -94,8 +94,10 @@ class Combat_draw:
 
         type1_text = font[0].render(ally.get_types()[0].capitalize(), True, (0, 0, 0))
         screen.blit(type1_text, (383, 625))
-        type2_text = font[0].render(ally.get_types()[1].capitalize(), True, (0, 0, 0))
-        screen.blit(type2_text, (383, 675))
+        if len(ally.get_types()) == 2:
+            type2_text = font[0].render(ally.get_types()[1].capitalize(), True, (0, 0, 0))
+            screen.blit(type2_text, (383, 675))
+        
         back_text = font[0].render("Back", True, (0, 0, 0))
         screen.blit(back_text, (383, 725))
         

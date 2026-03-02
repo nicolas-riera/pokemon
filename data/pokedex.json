@@ -4,7 +4,7 @@
         "hp": 45,
         "level": 1,
         "xp": 30,
-        "in_use": false
+        "in_use": true
     },
     "1": {
         "id": "0016",

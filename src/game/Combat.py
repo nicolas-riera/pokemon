@@ -1,8 +1,9 @@
 import random
 import pygame
 import time
+import os
 
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR
+from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR, POKEMON_SOUND_PATH
 from src.pokemon.Pokemon import Pokemon
 from src.game.Combat_draw import Combat_draw
 from src.game.game_main_text_rendering import draw_text_block
@@ -96,7 +97,7 @@ class Combat:
             Combat_draw.display_choose_attack_type(screen, font, self.__ally)
             if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 625)) 
-            elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+            elif self.__type2_button.collidepoint(pygame.mouse.get_pos()) and len(self.__ally.get_types()) == 2:
                 screen.blit(CURSOR, (340, 675)) 
             elif self.__back_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 725))  
@@ -109,10 +110,15 @@ class Combat:
             self.__ally = ally
             self.__first_run = False
             self.__enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+            self.__enemy_sound = os.path.join(POKEMON_SOUND_PATH, f"{self.__enemy.get_id()}.mp3")
             self.__start_timer = time.monotonic()
 
         if escpressed:
             self.__run()
+
+        elif time.monotonic() - self.__start_timer >= 1.0 and self.__enemy_sound:
+            pygame.mixer.Sound(self.__enemy_sound).play()
+            self.__enemy_sound = None
 
         elif time.monotonic() - self.__start_timer > 4 and self.__state == "game":
             self.__state = "choose_action"
@@ -134,7 +140,7 @@ class Combat:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         
         elif self.__state == "choose_attack_type":
-            if self.__type1_button.collidepoint(pygame.mouse.get_pos()) or self.__type2_button.collidepoint(pygame.mouse.get_pos()) or self.__back_button.collidepoint(pygame.mouse.get_pos()):
+            if self.__type1_button.collidepoint(pygame.mouse.get_pos()) or (self.__type2_button.collidepoint(pygame.mouse.get_pos()) and len(self.__ally.get_types()) == 2) or self.__back_button.collidepoint(pygame.mouse.get_pos()):
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
@@ -142,7 +148,7 @@ class Combat:
                         self.__attack_type = self.__ally.get_types()[0]
                         self.__attack(self.__ally, self.__enemy)
                         self.__state = "enemy_attack"
-                    elif self.__type2_button.collidepoint(pygame.mouse.get_pos()):
+                    elif self.__type2_button.collidepoint(pygame.mouse.get_pos()) and len(self.__ally.get_types()) == 2:
                         self.__attack_type = self.__ally.get_types()[1]
                         self.__attack(self.__ally, self.__enemy)
                         self.__state = "enemy_attack"
