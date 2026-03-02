@@ -188,6 +188,9 @@ class Pokedex:
         if self.page_index < max_pages:
             next_text = pagination_font.render(">", True, (200, 200, 200))
             screen.blit(next_text, (690, 690))
+        back_font = pygame.font.Font(self.font_path, 12) 
+        back_text = back_font.render("Escape", True, (250, 250, 250))
+        screen.blit(back_text, (100, 690))
         print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
 
@@ -287,6 +290,16 @@ class Pokedex:
             if mouseclicked_left:
                 pygame.mixer.Sound(SFX_PRESS_AB).play()
                 self.page_index += 1 
+
+        back_rect = pygame.Rect(100, 690, 50, 50)
+        if back_rect.collidepoint(pygame.mouse.get_pos()):
+            hover = True
+            if mouseclicked_left:
+                pygame.mixer.music.pause()
+                pygame.mixer.music.unload()
+                pygame.mixer.Sound(SFX_TINK).play()
+                self.music = None
+                state = "menu"
 
         if hover:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
