@@ -4,7 +4,7 @@ import time
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-class Combat_draw:
+class CombatDraw:
     def __init__(self):
         pass
 

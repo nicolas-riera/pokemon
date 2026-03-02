@@ -1,6 +1,6 @@
 from pygame import display
 from time import sleep
-from game.CombatIntro import CombatIntro
+from src.game.CombatIntro import CombatIntro
 
 import pygame
 
