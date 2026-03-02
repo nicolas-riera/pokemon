@@ -1,6 +1,6 @@
 from pygame import display
 from time import sleep
-from src.game.Combat_intro import Combat_intro
+from game.CombatIntro import CombatIntro
 
 import pygame
 
@@ -17,7 +17,7 @@ def screen_transition(screen, clock, state):
     sleep(0.5)
 
     if state == "game":
-        Combat_intro.combat_intro(screen, clock)
+        CombatIntro.combat_intro(screen, clock)
 
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
