@@ -7,6 +7,7 @@ from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_P
 from src.pokemon.Pokemon import Pokemon
 from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
+from src.pokemon.Pokedex import Pokedex
 
 class Combat:
     def __init__(self):
@@ -27,6 +28,7 @@ class Combat:
         self.__type2_button = pygame.Rect((370, 674, 300, 38))
         self.__back_button = pygame.Rect((370, 724, 130, 38))
 
+        self.pokedex = Pokedex()
     @staticmethod
     def __calculate_attack_mult(attack_type:str, enemy:object):
         mult = 1.0
@@ -51,8 +53,14 @@ class Combat:
     def __check_winner(self):
         if self.__ally and self.__enemy:
             if self.__ally.is_alive() is False:
-                self.__state = "enemy_won"
-                return self.__enemy.get_name()
+                # add enemy to pokedex if it dies
+                self.pokedex.add_pokemon_to_pokedex(
+                self.__enemy.get_id(), 
+                self.__enemy.get_hp(),
+                self.__enemy.get_level(), 
+                self.__enemy.get_xp()
+            )
+                self.state = "menu"
 
             elif self.__enemy.is_alive() is False:
                 self.__state = "ally_won"
