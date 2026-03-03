@@ -1,15 +1,41 @@
-# Combat.py
 import random
 import pygame
 import time
 import os
 import json
 
-from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR, POKEMON_SOUND_PATH
+from src.assets_loading import (
+    POKEMONS_TYPE_STATS,
+    POKEMON_DATA,
+    SFX_RUN,
+    SFX_PRESS_AB,
+    CURSOR,
+    POKEMON_SOUND_PATH,
+    HIT_NORMAL_SFX,
+    HIT_SUPER_SFX,
+    HIT_WEAK_SFX,
+    BUG_SFX,
+    DARK_SFX,
+    DRAGON_SFX,
+    ELECTRIC_SFX,
+    FAIRY_SFX,
+    FIRE_SFX,
+    FLYING_SFX,
+    GHOST_SFX,
+    GRASS_SFX,
+    GROUND_SFX,
+    ICE_SFX,
+    POISON_SFX,
+    PSYCHIC_SFX,
+    ROCK_SFX,
+    STEEL_SFX,
+    WATER_SFX,
+)
 from src.pokemon.Pokemon import Pokemon
 from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
 from src.pyinstaller.data_path import get_data_path
+
 
 class Combat:
     def __init__(self):
@@ -32,6 +58,41 @@ class Combat:
         self.__next_state = "choose_action"
 
         self.__misc_path = get_data_path("misc.json")
+
+        self.__sfx_cache = {}
+        self.__type_sfx = {
+            "bug": BUG_SFX,
+            "dark": DARK_SFX,
+            "dragon": DRAGON_SFX,
+            "electric": ELECTRIC_SFX,
+            "fairy": FAIRY_SFX,
+            "fire": FIRE_SFX,
+            "flying": FLYING_SFX,
+            "ghost": GHOST_SFX,
+            "grass": GRASS_SFX,
+            "ground": GROUND_SFX,
+            "ice": ICE_SFX,
+            "poison": POISON_SFX,
+            "psychic": PSYCHIC_SFX,
+            "rock": ROCK_SFX,
+            "steel": STEEL_SFX,
+            "water": WATER_SFX,
+        }
+
+    def __get_sfx(self, path):
+        if path in self.__sfx_cache:
+            return self.__sfx_cache[path]
+        try:
+            s = pygame.mixer.Sound(path)
+            self.__sfx_cache[path] = s
+            return s
+        except:
+            return None
+
+    def __play_sfx(self, path):
+        s = self.__get_sfx(path)
+        if s:
+            s.play()
 
     def __read_misc(self):
         try:
@@ -79,7 +140,7 @@ class Combat:
         self.__write_misc(data)
         return data["match_counter"]
 
-    def __heal_all_pokemons(self, pokedex, match_counter):
+    def __maybe_heal_all_pokemons(self, pokedex, match_counter):
         if match_counter <= 0:
             return
         if match_counter % 5 != 0:
@@ -95,7 +156,7 @@ class Combat:
 
     def __end_match(self, pokedex):
         match_counter = self.__inc_misc_match_counter()
-        self.__heal_all_pokemons(pokedex, match_counter)
+        self.__maybe_heal_all_pokemons(pokedex, match_counter)
         self.__clear_misc_enemy_state()
 
     def __load_enemy_from_misc(self, misc):
@@ -142,8 +203,23 @@ class Combat:
 
         return pokemon
 
+    def __play_attack_sfx(self, attack_type, mult):
+        t = str(attack_type).lower()
+
+        if t in self.__type_sfx:
+            self.__play_sfx(self.__type_sfx[t])
+
+        if mult > 1:
+            self.__play_sfx(HIT_SUPER_SFX)
+        elif mult < 1:
+            self.__play_sfx(HIT_WEAK_SFX)
+        else:
+            self.__play_sfx(HIT_NORMAL_SFX)
+
     def __attack(self, src, dest):
-        damage = self.__calculate_attack_mult(self.__attack_type, dest) * src.get_attack()
+        mult = self.__calculate_attack_mult(self.__attack_type, dest)
+        self.__play_attack_sfx(self.__attack_type, mult)
+        damage = mult * src.get_attack()
         src.attack(dest, damage)
 
     def __run(self, pokedex):
@@ -217,7 +293,10 @@ class Combat:
             return self.__state
 
         if time.monotonic() - self.__start_timer >= 1.0 and self.__enemy_sound:
-            pygame.mixer.Sound(self.__enemy_sound).play()
+            try:
+                pygame.mixer.Sound(self.__enemy_sound).play()
+            except:
+                pass
             self.__enemy_sound = None
 
         if time.monotonic() - self.__start_timer > 4 and self.__state == "game":
@@ -259,7 +338,11 @@ class Combat:
             return self.__state
 
         if self.__state == "choose_action":
-            if self.__ack_button.collidepoint(pygame.mouse.get_pos()) or self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__run_button.collidepoint(pygame.mouse.get_pos()):
+            if (
+                self.__ack_button.collidepoint(pygame.mouse.get_pos())
+                or self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos())
+                or self.__run_button.collidepoint(pygame.mouse.get_pos())
+            ):
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
@@ -305,10 +388,10 @@ class Combat:
                         pokedex.add_pokemon_to_pokedex(enemy_id, base_hp, self.__enemy.get_level(), 0)
 
                         xp_gain = 20 + self.__enemy.get_level() * 10
-                        leveled = self.__ally.gain_xp_and_level_up(xp_gain)
+                        levels = self.__ally.gain_xp_and_level_up(xp_gain)
                         self.__save_ally_to_pokedex(pokedex)
 
-                        if leveled:
+                        if levels > 0:
                             self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex! {self.__ally.get_name()} gained {xp_gain} XP and leveled up to LVL {self.__ally.get_level()}!"
                         else:
                             self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex! {self.__ally.get_name()} gained {xp_gain} XP!"

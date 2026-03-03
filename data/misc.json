@@ -1,3 +1,6 @@
 {
-    "match_counter": 7
+    "match_counter": 9,
+    "enemy_id": "0031",
+    "enemy_hp": 61.0,
+    "enemy_level": 2
 }
