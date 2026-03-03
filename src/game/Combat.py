@@ -77,6 +77,26 @@ class Combat:
             data["match_counter"] = 0
         data["match_counter"] += 1
         self.__write_misc(data)
+        return data["match_counter"]
+
+    def __heal_all_pokemons(self, pokedex, match_counter):
+        if match_counter <= 0:
+            return
+        if match_counter % 5 != 0:
+            return
+
+        for key, val in pokedex.pokedex_data.items():
+            pid = val.get("id")
+            if pid in POKEMON_DATA:
+                pokedex.pokedex_data[key]["hp"] = POKEMON_DATA[pid]["hp"]
+
+        pokedex.write_json()
+        pokedex.load_pokedex_objects()
+
+    def __end_match(self, pokedex):
+        match_counter = self.__inc_misc_match_counter()
+        self.__heal_all_pokemons(pokedex, match_counter)
+        self.__clear_misc_enemy_state()
 
     def __load_enemy_from_misc(self, misc):
         enemy_id = misc.get("enemy_id", None)
@@ -85,7 +105,6 @@ class Combat:
 
         if enemy_id is None or enemy_hp is None or enemy_level is None:
             return None
-
         if enemy_id not in POKEMON_DATA:
             return None
 
@@ -127,11 +146,12 @@ class Combat:
         damage = self.__calculate_attack_mult(self.__attack_type, dest) * src.get_attack()
         src.attack(dest, damage)
 
-    def __run(self):
+    def __run(self, pokedex):
         pygame.mixer.music.pause()
         pygame.mixer.music.unload()
         pygame.mixer.Sound(SFX_RUN).play()
         self.music = None
+        self.__end_match(pokedex)
         self.__state = "menu"
 
     def __save_ally_to_pokedex(self, pokedex):
@@ -144,33 +164,6 @@ class Combat:
                 pokedex.pokedex_data[key]["in_use"] = self.__ally.get_in_use()
                 pokedex.write_json()
                 break
-
-    def __remove_ally_from_pokedex(self, pokedex):
-        ally_id = self.__ally.get_id()
-        key_to_remove = None
-
-        for key, attributes in pokedex.pokedex_data.items():
-            if attributes.get("id") == ally_id:
-                key_to_remove = key
-                break
-
-        if key_to_remove is None:
-            return
-
-        del pokedex.pokedex_data[key_to_remove]
-
-        temp_dict = {}
-        keys = list(pokedex.pokedex_data.keys())
-        keys.sort(key=lambda x: int(x))
-
-        i = 0
-        for k in keys:
-            temp_dict[str(i)] = pokedex.pokedex_data[k]
-            i += 1
-
-        pokedex.pokedex_data = temp_dict
-        pokedex.write_json()
-        pokedex.load_pokedex_objects()
 
     def draw(self, screen, font):
         CombatDraw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
@@ -220,7 +213,7 @@ class Combat:
             self.__start_timer = time.monotonic()
 
         if escpressed:
-            self.__run()
+            self.__run(pokedex)
             return self.__state
 
         if time.monotonic() - self.__start_timer >= 1.0 and self.__enemy_sound:
@@ -240,13 +233,11 @@ class Combat:
                     self.__save_ally_to_pokedex(pokedex)
 
                     if self.__ally.is_alive() is False:
-                        self.__remove_ally_from_pokedex(pokedex)
                         self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}! {self.__ally.get_name()} fainted! Returning to menu."
                         self.__message_step = "end_to_menu"
                         self.__next_state = "menu"
                         self.__state = "message"
-                        self.__inc_misc_match_counter()
-                        self.__clear_misc_enemy_state()
+                        self.__end_match(pokedex)
                         return self.__state
 
                     self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}!"
@@ -256,8 +247,7 @@ class Combat:
                     return self.__state
 
                 if self.__message_step == "caught_to_menu":
-                    self.__inc_misc_match_counter()
-                    self.__clear_misc_enemy_state()
+                    self.__end_match(pokedex)
                     self.__state = "menu"
                     return self.__state
 
@@ -278,7 +268,7 @@ class Combat:
                     elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
                         pass
                     else:
-                        self.__run()
+                        self.__run(pokedex)
                 else:
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
@@ -314,7 +304,15 @@ class Combat:
                         base_hp = POKEMON_DATA[enemy_id]["hp"]
                         pokedex.add_pokemon_to_pokedex(enemy_id, base_hp, self.__enemy.get_level(), 0)
 
-                        self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex!"
+                        xp_gain = 20 + self.__enemy.get_level() * 10
+                        leveled = self.__ally.gain_xp_and_level_up(xp_gain)
+                        self.__save_ally_to_pokedex(pokedex)
+
+                        if leveled:
+                            self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex! {self.__ally.get_name()} gained {xp_gain} XP and leveled up to LVL {self.__ally.get_level()}!"
+                        else:
+                            self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex! {self.__ally.get_name()} gained {xp_gain} XP!"
+
                         self.__message_step = "caught_to_menu"
                         self.__next_state = "menu"
                         self.__state = "message"

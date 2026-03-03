@@ -1,4 +1,3 @@
-# PygameApp.py
 import pygame
 import os
 

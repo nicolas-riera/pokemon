@@ -1,4 +1,3 @@
-# Pokemon.py
 class Pokemon:
     def __init__(self, name=""):
         self.__name = name
@@ -94,3 +93,20 @@ class Pokemon:
 
     def add_level(self):
         self.__level += 1
+
+    def xp_needed_for_next_level(self):
+        return 50 + (self.__level - 1) * 25
+
+    def gain_xp_and_level_up(self, xp_amount):
+        self.__xp += xp_amount
+        leveled = False
+
+        while self.__xp >= self.xp_needed_for_next_level():
+            self.__xp -= self.xp_needed_for_next_level()
+            self.__level += 1
+            self.__attack += 2
+            self.__defense += 1
+            self.set_hp(self.__hp + 5)
+            leveled = True
+
+        return leveled
