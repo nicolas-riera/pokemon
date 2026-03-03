@@ -22,7 +22,7 @@ class PygameApp:
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
-        self.gamestates = ["game", "choose_action", "choose_attack_type", "ally_won", "enemy_won"]
+        self.gamestates = ["game", "choose_action", "choose_attack_type", "message", "ally_won", "enemy_won"]
         self.reset_all_class()
         pygame.mixer.music.set_endevent(MUSIC_END)
 
@@ -40,17 +40,16 @@ class PygameApp:
 
             if event.type == pygame.QUIT:
                 self.running = False
-            
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouseclicked_left = True
-            
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 self.mouseclicked_right = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.escpressed = True 
-            
-            # musics that have an intro
+                    self.escpressed = True
+
             if self.state == "menu":
                 if event.type == MUSIC_END:
                     pygame.mixer.music.pause()
@@ -91,11 +90,10 @@ class PygameApp:
             screen_transition(self.screen, self.clock, self.state)
             self.reset_all_class()
             self.changed_state = True
-            
+
     def loop(self):
         while self.running:
             self.events()
             self.logic()
             if not self.changed_state:
                 self.draw()
-            

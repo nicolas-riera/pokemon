@@ -79,3 +79,9 @@ class Pokemon:
     
     def set_in_use(self, in_use):
         self.__in_use = in_use
+
+    def add_xp(self, xp):
+        self.__xp += xp
+
+    def add_level(self):
+        self.__level += 1
