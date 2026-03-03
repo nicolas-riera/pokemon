@@ -30,12 +30,12 @@ from src.assets_loading import (
     ROCK_SFX,
     STEEL_SFX,
     WATER_SFX,
+    CAUGHT_POKEMON_MUSIC
 )
 from src.pokemon.Pokemon import Pokemon
 from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
 from src.pyinstaller.data_path import get_data_path
-
 
 class Combat:
     def __init__(self):
@@ -249,6 +249,9 @@ class Combat:
                 pokedex.write_json()
                 break
 
+    def get_message_step(self):
+        return self.__message_step
+
     def draw(self, screen, font, pokedex=None):
         CombatDraw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
 
@@ -331,6 +334,8 @@ class Combat:
                     self.__save_ally_to_pokedex(pokedex)
 
                     if self.__ally.is_alive() is False:
+                        pygame.mixer.music.pause()
+                        pygame.mixer.music.unload()
                         self.__message = f"{self.__enemy.get_name()} used {self.__attack_type.capitalize()}! It dealt {hp_dealt} HP! {self.__ally.get_name()} fainted! Returning to menu."
                         self.__message_step = "end_to_menu"
                         self.__next_state = "menu"
@@ -407,6 +412,12 @@ class Combat:
                     self.__set_misc_enemy_state()
 
                     if self.__enemy.is_alive() is False:
+
+                        pygame.mixer.music.pause()
+                        pygame.mixer.music.unload()
+                        pygame.mixer.music.load(CAUGHT_POKEMON_MUSIC)
+                        pygame.mixer.music.play()
+
                         enemy_id = self.__enemy.get_id()
                         base_hp = POKEMON_DATA[enemy_id]["hp"]
                         pokedex.add_pokemon_to_pokedex(enemy_id, base_hp, self.__enemy.get_level(), 0)
