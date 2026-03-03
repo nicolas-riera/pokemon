@@ -1,3 +1,4 @@
+# PygameApp.py
 import pygame
 import os
 
@@ -22,7 +23,7 @@ class PygameApp:
         self.pokemon_objects = []
         self.font = pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 30), pygame.font.Font(os.path.join(BASE_DIR, "..", "assets", "font", "pokemon_generation_1.ttf"), 20)
         self.state = "menu"
-        self.gamestates = ["game", "choose_action", "choose_attack_type", "message", "ally_won", "enemy_won"]
+        self.gamestates = ["game", "choose_action", "choose_attack_type", "message"]
         self.reset_all_class()
         pygame.mixer.music.set_endevent(MUSIC_END)
 
@@ -82,7 +83,8 @@ class PygameApp:
         if self.state == "menu":
             self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state)
         elif self.state in self.gamestates:
-            self.state = self.combat.logic(self.pokedex.pokedex_objects[self.pokedex.get_pokemon_id_in_use()], self.escpressed, self.mouseclicked_left)
+            ally = self.pokedex.pokedex_objects[self.pokedex.get_pokemon_id_in_use()]
+            self.state = self.combat.logic(ally, self.pokedex, self.escpressed, self.mouseclicked_left)
         elif self.state == "pokedex":
             self.state = self.pokedex.pokedex_logic(self.escpressed, self.state, self.mouseclicked_left, self.mouseclicked_right)
 

@@ -1,3 +1,4 @@
+# Pokemon.py
 class Pokemon:
     def __init__(self, name=""):
         self.__name = name
@@ -20,7 +21,6 @@ class Pokemon:
     def is_alive(self):
         if self.get_hp() > 0:
             return True
-
         return False
 
     def attack(self, enemy, hp):
@@ -66,6 +66,15 @@ class Pokemon:
         self.__defense = defense
     
     def set_hp(self, hp):
+        if hp is None:
+            self.__hp = 0
+            return
+        try:
+            hp = float(hp)
+        except:
+            hp = 0
+        if hp < 0:
+            hp = 0
         self.__hp = hp
 
     def set_level(self, level):

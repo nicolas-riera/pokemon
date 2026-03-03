@@ -1,12 +1,15 @@
+# Combat.py
 import random
 import pygame
 import time
 import os
+import json
 
 from src.assets_loading import POKEMONS_TYPE_STATS, POKEMON_DATA, SFX_RUN, SFX_PRESS_AB, CURSOR, POKEMON_SOUND_PATH
 from src.pokemon.Pokemon import Pokemon
 from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
+from src.pyinstaller.data_path import get_data_path
 
 class Combat:
     def __init__(self):
@@ -14,8 +17,6 @@ class Combat:
         self.__ally = None
         self.__enemy = None
         self.__state = "game"
-        self.__ally_attack_type = None
-        self.__enemy_attack_type = None
         self.__attack_type = None
 
         self.__ack_button = pygame.Rect((473, 624, 187, 38))
@@ -27,8 +28,82 @@ class Combat:
         self.__back_button = pygame.Rect((370, 724, 130, 38))
 
         self.__message = ""
-        self.__message_mode = ""
-        self.__message_next_state = "choose_action"
+        self.__message_step = ""
+        self.__next_state = "choose_action"
+
+        self.__misc_path = get_data_path("misc.json")
+
+    def __read_misc(self):
+        try:
+            with open(self.__misc_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+        except:
+            pass
+        return {}
+
+    def __write_misc(self, data):
+        try:
+            with open(self.__misc_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4)
+        except:
+            pass
+
+    def __set_misc_enemy_state(self):
+        data = self.__read_misc()
+        data["enemy_id"] = self.__enemy.get_id()
+        data["enemy_hp"] = self.__enemy.get_hp()
+        data["enemy_level"] = self.__enemy.get_level()
+        if "match_counter" not in data:
+            data["match_counter"] = 0
+        self.__write_misc(data)
+
+    def __clear_misc_enemy_state(self):
+        data = self.__read_misc()
+        if "enemy_id" in data:
+            del data["enemy_id"]
+        if "enemy_hp" in data:
+            del data["enemy_hp"]
+        if "enemy_level" in data:
+            del data["enemy_level"]
+        if "match_counter" not in data:
+            data["match_counter"] = 0
+        self.__write_misc(data)
+
+    def __inc_misc_match_counter(self):
+        data = self.__read_misc()
+        if "match_counter" not in data:
+            data["match_counter"] = 0
+        data["match_counter"] += 1
+        self.__write_misc(data)
+
+    def __load_enemy_from_misc(self, misc):
+        enemy_id = misc.get("enemy_id", None)
+        enemy_hp = misc.get("enemy_hp", None)
+        enemy_level = misc.get("enemy_level", None)
+
+        if enemy_id is None or enemy_hp is None or enemy_level is None:
+            return None
+
+        if enemy_id not in POKEMON_DATA:
+            return None
+
+        try:
+            enemy_hp = float(enemy_hp)
+            enemy_level = int(enemy_level)
+        except:
+            return None
+
+        if enemy_hp <= 0:
+            return None
+
+        p = Pokemon()
+        p.load_from_POKEMON_DATA_dict(POKEMON_DATA[enemy_id])
+        p.set_id(enemy_id)
+        p.set_level(max(1, enemy_level))
+        p.set_hp(enemy_hp)
+        return p
 
     @staticmethod
     def __calculate_attack_mult(attack_type: str, enemy: object):
@@ -44,28 +119,13 @@ class Combat:
 
         pokemon.load_from_POKEMON_DATA_dict(random_pokemon_dict)
         pokemon.set_id(random_id)
-        pokemon.set_level(max(1, random.choice(
-            [ally.get_level() - 1, ally.get_level(), ally.get_level() + 1])
-        ))
+        pokemon.set_level(max(1, random.choice([ally.get_level() - 1, ally.get_level(), ally.get_level() + 1])))
 
         return pokemon
-
-    def __check_winner(self):
-        if self.__ally and self.__enemy:
-            if self.__ally.is_alive() is False:
-                self.__state = "enemy_won"
-                return self.__enemy.get_name()
-            elif self.__enemy.is_alive() is False:
-                self.__state = "ally_won"
-                return self.__ally.get_name()
-        return None
 
     def __attack(self, src, dest):
         damage = self.__calculate_attack_mult(self.__attack_type, dest) * src.get_attack()
         src.attack(dest, damage)
-
-    def events(self):
-        pass
 
     def __run(self):
         pygame.mixer.music.pause()
@@ -73,6 +133,44 @@ class Combat:
         pygame.mixer.Sound(SFX_RUN).play()
         self.music = None
         self.__state = "menu"
+
+    def __save_ally_to_pokedex(self, pokedex):
+        ally_id = self.__ally.get_id()
+        for key, val in pokedex.pokedex_data.items():
+            if val.get("id") == ally_id:
+                pokedex.pokedex_data[key]["hp"] = self.__ally.get_hp()
+                pokedex.pokedex_data[key]["level"] = self.__ally.get_level()
+                pokedex.pokedex_data[key]["xp"] = self.__ally.get_xp()
+                pokedex.pokedex_data[key]["in_use"] = self.__ally.get_in_use()
+                pokedex.write_json()
+                break
+
+    def __remove_ally_from_pokedex(self, pokedex):
+        ally_id = self.__ally.get_id()
+        key_to_remove = None
+
+        for key, attributes in pokedex.pokedex_data.items():
+            if attributes.get("id") == ally_id:
+                key_to_remove = key
+                break
+
+        if key_to_remove is None:
+            return
+
+        del pokedex.pokedex_data[key_to_remove]
+
+        temp_dict = {}
+        keys = list(pokedex.pokedex_data.keys())
+        keys.sort(key=lambda x: int(x))
+
+        i = 0
+        for k in keys:
+            temp_dict[str(i)] = pokedex.pokedex_data[k]
+            i += 1
+
+        pokedex.pokedex_data = temp_dict
+        pokedex.write_json()
+        pokedex.load_pokedex_objects()
 
     def draw(self, screen, font):
         CombatDraw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
@@ -85,10 +183,8 @@ class Combat:
 
         if self.__state == "game":
             draw_text_block(screen, f"A wild {self.__enemy.get_name()} has appeared!", font)
-
         elif self.__state == "message":
             draw_text_block(screen, self.__message, font)
-
         elif self.__state == "choose_action":
             CombatDraw.display_choose_action_block(screen, font)
             if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
@@ -97,7 +193,6 @@ class Combat:
                 screen.blit(CURSOR, (440, 675))
             elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (440, 725))
-
         elif self.__state == "choose_attack_type":
             CombatDraw.display_choose_attack_type(screen, font, self.__ally)
             if self.__type1_button.collidepoint(pygame.mouse.get_pos()):
@@ -107,11 +202,20 @@ class Combat:
             elif self.__back_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 725))
 
-    def logic(self, ally, escpressed, mouseclicked_left):
+    def logic(self, ally, pokedex, escpressed, mouseclicked_left):
         if self.__first_run:
             self.__ally = ally
             self.__first_run = False
-            self.__enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+
+            misc = self.__read_misc()
+            loaded_enemy = self.__load_enemy_from_misc(misc)
+
+            if loaded_enemy:
+                self.__enemy = loaded_enemy
+            else:
+                self.__enemy = self.__select_random_pokemon_from_POKEMON_DATA(ally)
+                self.__set_misc_enemy_state()
+
             self.__enemy_sound = os.path.join(POKEMON_SOUND_PATH, f"{self.__enemy.get_id()}.mp3")
             self.__start_timer = time.monotonic()
 
@@ -130,24 +234,38 @@ class Combat:
             if mouseclicked_left:
                 pygame.mixer.Sound(SFX_PRESS_AB).play()
 
-                if self.__message_mode == "after_ally":
+                if self.__message_step == "after_ally_attack":
                     self.__attack_type = random.choice(self.__enemy.get_types())
                     self.__attack(self.__enemy, self.__ally)
+                    self.__save_ally_to_pokedex(pokedex)
 
                     if self.__ally.is_alive() is False:
-                        self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}! {self.__ally.get_name()} fainted!"
-                        self.__message_mode = "end_enemy"
-                        self.__message_next_state = "enemy_won"
+                        self.__remove_ally_from_pokedex(pokedex)
+                        self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}! {self.__ally.get_name()} fainted! Returning to menu."
+                        self.__message_step = "end_to_menu"
+                        self.__next_state = "menu"
                         self.__state = "message"
+                        self.__inc_misc_match_counter()
+                        self.__clear_misc_enemy_state()
                         return self.__state
 
                     self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}!"
-                    self.__message_mode = "back_to_action"
-                    self.__message_next_state = "choose_action"
+                    self.__message_step = "back_to_action"
+                    self.__next_state = "choose_action"
                     self.__state = "message"
                     return self.__state
 
-                self.__state = self.__message_next_state
+                if self.__message_step == "caught_to_menu":
+                    self.__inc_misc_match_counter()
+                    self.__clear_misc_enemy_state()
+                    self.__state = "menu"
+                    return self.__state
+
+                if self.__message_step == "end_to_menu":
+                    self.__state = "menu"
+                    return self.__state
+
+                self.__state = self.__next_state
             return self.__state
 
         if self.__state == "choose_action":
@@ -176,45 +294,40 @@ class Combat:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
+                    if on_back:
+                        self.__state = "choose_action"
+                        return self.__state
+
                     if on_type1:
                         self.__attack_type = self.__ally.get_types()[0]
-                        self.__attack(self.__ally, self.__enemy)
-
-                        if self.__enemy.is_alive() is False:
-                            self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokedex!"
-                            self.__message_mode = "end_ally"
-                            self.__message_next_state = "ally_won"
-                            self.__state = "message"
-                            return self.__state
-
-                        self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}!"
-                        self.__message_mode = "after_ally"
-                        self.__state = "message"
-                        return self.__state
-
-                    if on_type2:
+                    elif on_type2:
                         self.__attack_type = self.__ally.get_types()[1]
-                        self.__attack(self.__ally, self.__enemy)
+                    else:
+                        self.__state = "choose_action"
+                        return self.__state
 
-                        if self.__enemy.is_alive() is False:
-                            self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokedex!"
-                            self.__message_mode = "end_ally"
-                            self.__message_next_state = "ally_won"
-                            self.__state = "message"
-                            return self.__state
+                    self.__attack(self.__ally, self.__enemy)
+                    self.__set_misc_enemy_state()
 
-                        self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}!"
-                        self.__message_mode = "after_ally"
+                    if self.__enemy.is_alive() is False:
+                        enemy_id = self.__enemy.get_id()
+                        base_hp = POKEMON_DATA[enemy_id]["hp"]
+                        pokedex.add_pokemon_to_pokedex(enemy_id, base_hp, self.__enemy.get_level(), 0)
+
+                        self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex!"
+                        self.__message_step = "caught_to_menu"
+                        self.__next_state = "menu"
                         self.__state = "message"
                         return self.__state
 
-                    self.__state = "choose_action"
+                    self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}!"
+                    self.__message_step = "after_ally_attack"
+                    self.__state = "message"
+                    return self.__state
+
                 else:
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
-        if self.__state == "enemy_won" or self.__state == "ally_won":
-            return self.__state
 
         return self.__state

@@ -1,65 +1,65 @@
 {
     "0": {
-        "id": "0001",
-        "hp": 45,
-        "level": 1,
-        "xp": 30,
-        "in_use": true
-    },
-    "1": {
         "id": "0016",
-        "hp": 50,
+        "hp": 36.0,
         "level": 2,
         "xp": 20,
         "in_use": false
     },
-    "2": {
+    "1": {
         "id": "0206",
         "hp": 50,
         "level": 2,
         "xp": 20,
         "in_use": false
     },
-    "3": {
+    "2": {
         "id": "0096",
-        "hp": 50,
+        "hp": 2.0,
         "level": 2,
         "xp": 20,
-        "in_use": false
+        "in_use": true
     },
-    "4": {
+    "3": {
         "id": "0097",
         "hp": 50,
         "level": 2,
         "xp": 20,
         "in_use": false
     },
-    "5": {
+    "4": {
         "id": "0098",
         "hp": 50,
         "level": 2,
         "xp": 20,
         "in_use": false
     },
-    "6": {
+    "5": {
         "id": "0099",
-        "hp": 50,
+        "hp": 15.0,
         "level": 2,
         "xp": 20,
         "in_use": false
     },
-    "7": {
+    "6": {
         "id": "0100",
         "hp": 50,
         "level": 2,
         "xp": 20,
         "in_use": false
     },
-    "8": {
+    "7": {
         "id": "0101",
         "hp": 50,
         "level": 2,
         "xp": 20,
+        "in_use": false
+    },
+    "8": {
+        "id": "0091",
+        "hp": 70,
+        "level": 1,
+        "xp": 0,
         "in_use": false
     }
 }
