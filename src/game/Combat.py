@@ -36,7 +36,6 @@ from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
 from src.pyinstaller.data_path import get_data_path
 
-
 class Combat:
     def __init__(self):
         self.__first_run = True
@@ -218,9 +217,21 @@ class Combat:
 
     def __attack(self, src, dest):
         mult = self.__calculate_attack_mult(self.__attack_type, dest)
+
+        before_hp = dest.get_hp()
+
         self.__play_attack_sfx(self.__attack_type, mult)
+
         damage = mult * src.get_attack()
         src.attack(dest, damage)
+
+        after_hp = dest.get_hp()
+        hp_dealt = int(before_hp - after_hp)
+
+        if hp_dealt < 0:
+            hp_dealt = 0
+
+        return hp_dealt
 
     def __run(self, pokedex):
         pygame.mixer.music.pause()
@@ -308,18 +319,18 @@ class Combat:
 
                 if self.__message_step == "after_ally_attack":
                     self.__attack_type = random.choice(self.__enemy.get_types())
-                    self.__attack(self.__enemy, self.__ally)
+                    hp_dealt = self.__attack(self.__enemy, self.__ally)
                     self.__save_ally_to_pokedex(pokedex)
 
                     if self.__ally.is_alive() is False:
-                        self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}! {self.__ally.get_name()} fainted! Returning to menu."
+                        self.__message = f"{self.__enemy.get_name()} used {self.__attack_type.capitalize()}! It dealt {hp_dealt} HP! {self.__ally.get_name()} fainted! Returning to menu."
                         self.__message_step = "end_to_menu"
                         self.__next_state = "menu"
                         self.__state = "message"
                         self.__end_match(pokedex)
                         return self.__state
 
-                    self.__message = f"{self.__enemy.get_name()} attacked {self.__ally.get_name()}!"
+                    self.__message = f"{self.__enemy.get_name()} used {self.__attack_type.capitalize()}! It dealt {hp_dealt} HP!"
                     self.__message_step = "back_to_action"
                     self.__next_state = "choose_action"
                     self.__state = "message"
@@ -379,7 +390,7 @@ class Combat:
                         self.__state = "choose_action"
                         return self.__state
 
-                    self.__attack(self.__ally, self.__enemy)
+                    hp_dealt = self.__attack(self.__ally, self.__enemy)
                     self.__set_misc_enemy_state()
 
                     if self.__enemy.is_alive() is False:
@@ -392,16 +403,16 @@ class Combat:
                         self.__save_ally_to_pokedex(pokedex)
 
                         if levels > 0:
-                            self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex! {self.__ally.get_name()} gained {xp_gain} XP and leveled up to LVL {self.__ally.get_level()}!"
+                            self.__message = f"{self.__ally.get_name()} used {self.__attack_type.capitalize()}! It dealt {hp_dealt} HP! {self.__enemy.get_name()} has been caught and added to the Pokedex! {self.__ally.get_name()} gained {xp_gain} XP and leveled up to LVL {self.__ally.get_level()}!"
                         else:
-                            self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}! {self.__enemy.get_name()} has been caught and added to the Pokédex! {self.__ally.get_name()} gained {xp_gain} XP!"
+                            self.__message = f"{self.__ally.get_name()} used {self.__attack_type.capitalize()}! It dealt {hp_dealt} HP! {self.__enemy.get_name()} has been caught and added to the Pokedex! {self.__ally.get_name()} gained {xp_gain} XP!"
 
                         self.__message_step = "caught_to_menu"
                         self.__next_state = "menu"
                         self.__state = "message"
                         return self.__state
 
-                    self.__message = f"{self.__ally.get_name()} attacked {self.__enemy.get_name()}!"
+                    self.__message = f"{self.__ally.get_name()} used {self.__attack_type.capitalize()}! It dealt {hp_dealt} HP!"
                     self.__message_step = "after_ally_attack"
                     self.__state = "message"
                     return self.__state
