@@ -4,7 +4,7 @@
         "hp": 24.0,
         "level": 2,
         "xp": 20,
-        "in_use": true
+        "in_use": false
     },
     "1": {
         "id": "0206",
@@ -18,11 +18,11 @@
         "hp": 85,
         "level": 4,
         "xp": 65,
-        "in_use": false
+        "in_use": true
     },
     "3": {
         "id": "0098",
-        "hp": 0,
+        "hp": 20,
         "level": 2,
         "xp": 20,
         "in_use": false
