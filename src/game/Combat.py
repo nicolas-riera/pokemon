@@ -262,6 +262,7 @@ class Combat:
             draw_text_block(screen, f"A wild {self.__enemy.get_name()} has appeared!", font)
         elif self.__state == "message":
             draw_text_block(screen, self.__message, font)
+            screen.blit(CURSOR, (745, 745))
         elif self.__state == "choose_action":
             CombatDraw.display_choose_action_block(screen, font)
             if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
@@ -319,8 +320,10 @@ class Combat:
             self.__state = "choose_action"
 
         if self.__state == "message":
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             if mouseclicked_left:
                 pygame.mixer.Sound(SFX_PRESS_AB).play()
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
                 if self.__message_step == "after_ally_attack":
                     self.__attack_type = random.choice(self.__enemy.get_types())
