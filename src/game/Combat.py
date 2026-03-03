@@ -270,8 +270,8 @@ class Combat:
             CombatDraw.display_choose_action_block(screen, font)
             if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (440, 625))
-            elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                screen.blit(CURSOR, (440, 675))
+            # elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+            #     screen.blit(CURSOR, (440, 675))
             elif self.__run_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (440, 725))
         elif self.__state == "choose_attack_type":
@@ -364,7 +364,7 @@ class Combat:
         if self.__state == "choose_action":
             if (
                 self.__ack_button.collidepoint(pygame.mouse.get_pos())
-                or self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos())
+                # or self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos())
                 or self.__run_button.collidepoint(pygame.mouse.get_pos())
             ):
                 if mouseclicked_left:
@@ -373,10 +373,10 @@ class Combat:
 
                     if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
                         self.__state = "choose_attack_type"
-                    elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                        self.__set_misc_enemy_state()
-                        self.__return_state_after_pokedex = "choose_action"
-                        self.__state = "combat_pokedex"
+                    # elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                    #     self.__set_misc_enemy_state()
+                    #     self.__return_state_after_pokedex = "choose_action"
+                    #     self.__state = "combat_pokedex"
                     else:
                         self.__run()
 

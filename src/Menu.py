@@ -20,7 +20,7 @@ class Menu:
 
         play_button_text = font[0].render("Play", True, (0, 0, 0))
         screen.blit(play_button_text, (355, 430))
-        enemy_pokemon_button_text = font[0].render("Enemy Pokemon", True, (0, 0, 0))
+        enemy_pokemon_button_text = font[0].render("Enemy Pokemon", True, (160, 0, 0))
         screen.blit(enemy_pokemon_button_text, (235, 500))
         pokedex_button_text = font[0].render("Pokedex", True, (0, 0, 0))
         screen.blit(pokedex_button_text, (307, 570))
@@ -33,8 +33,8 @@ class Menu:
 
         if self.__play_button.collidepoint(pygame.mouse.get_pos()):
             screen.blit(CURSOR, (190, 430)) 
-        elif self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-            screen.blit(CURSOR, (190, 500)) 
+        # elif self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+        #     screen.blit(CURSOR, (190, 500)) 
         elif self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
             screen.blit(CURSOR, (190, 570))
 
@@ -45,15 +45,18 @@ class Menu:
         if escpressed: 
             pygame.quit()
             raise SystemExit
-        if self.__play_button.collidepoint(pygame.mouse.get_pos()) or self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()) or self.__pokedex_button.collidepoint(pygame.mouse.get_pos()):
+        if (self.__play_button.collidepoint(pygame.mouse.get_pos())
+            # or self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos())
+            or self.__pokedex_button.collidepoint(pygame.mouse.get_pos())
+            ):
             if mouseclicked:
                 pygame.mixer.Sound(SFX_PRESS_AB).play()
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                 if self.__play_button.collidepoint(pygame.mouse.get_pos()):
                     state = "game"
-                elif self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                    # state = "enemy_pokemon"
-                    pass
+                # elif self.__enemy_pokemon_button.collidepoint(pygame.mouse.get_pos()):
+                #     # state = "enemy_pokemon"
+                #     pass
                 else:
                     state = "pokedex"
             else:
