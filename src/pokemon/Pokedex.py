@@ -1,4 +1,3 @@
-# Pokedex.py
 import os
 import pygame
 import json

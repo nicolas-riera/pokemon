@@ -78,8 +78,8 @@ class CombatDraw:
 
         ack_text = font[0].render("Attack", True, (0, 0, 0))
         screen.blit(ack_text, (483, 625))
-        run_text = font[0].render("Pokemon", True, (0, 0, 0))
-        screen.blit(run_text, (483, 675))
+        # change_pokemon_text = font[0].render("Pokemon", True, (0, 0, 0))
+        # screen.blit(change_pokemon_text, (483, 675))
         run_text = font[0].render("Run", True, (0, 0, 0))
         screen.blit(run_text, (483, 725))
 
