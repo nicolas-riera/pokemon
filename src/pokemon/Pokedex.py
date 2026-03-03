@@ -1,3 +1,4 @@
+# Pokedex.py
 import os
 import pygame
 import json
@@ -29,7 +30,9 @@ class Pokedex:
             if values["in_use"] == True:
                 return int(id)
 
-    def pokedex_music(self):
+    def pokedex_music(self, in_combat=False):
+        if in_combat:
+            return
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(POKEMON_CENTER_MUSIC)
             pygame.mixer.music.play(-1)
@@ -194,21 +197,21 @@ class Pokedex:
 
 
 
-    def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right):
+    def pokedex_logic(self, escpressed, state, mouseclicked_left, mouseclicked_right, return_state="menu", in_combat=False):
         """
         Method managing pokedex inputs
         param escpressed : get escape input
         param state : get GAMESTATE
         """
-
-        self.pokedex_music()
+        self.pokedex_music(in_combat=in_combat)
 
         if escpressed:
-            pygame.mixer.music.pause()
-            pygame.mixer.music.unload()
-            pygame.mixer.Sound(SFX_TINK).play()
-            self.music = None
-            state = "menu"
+            if not in_combat:
+                pygame.mixer.music.pause()
+                pygame.mixer.music.unload()
+                pygame.mixer.Sound(SFX_TINK).play()
+                self.music = None
+            state = return_state
         
         # recalculate the displayed items to check for collisions
         beginning_page_index = self.page_index * self.pokemons_per_page
@@ -294,11 +297,12 @@ class Pokedex:
         if back_rect.collidepoint(pygame.mouse.get_pos()):
             hover = True
             if mouseclicked_left:
-                pygame.mixer.music.pause()
-                pygame.mixer.music.unload()
-                pygame.mixer.Sound(SFX_TINK).play()
-                self.music = None
-                state = "menu"
+                if not in_combat:
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.unload()
+                    pygame.mixer.Sound(SFX_TINK).play()
+                    self.music = None
+                state = return_state
 
         if hover:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
