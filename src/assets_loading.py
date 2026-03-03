@@ -44,9 +44,6 @@ INTRO_EVOLUTION_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music",
 EVOLUTION_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "evolution.mp3")
 POKEMON_EVOLVED_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "pokemon_evolved.mp3")
 
-INTRO_VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "intro_victory.mp3")
-VICTORY_MUSIC = os.path.join(BASE_DIR, "..", "assets", "sound", "music", "victory.mp3")
-
     # SFX
 
 SFX_PRESS_AB = os.path.join(BASE_DIR, "..", "assets", "sound", "sfx", "SFX_PRESS_AB.mp3")

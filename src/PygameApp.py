@@ -57,7 +57,7 @@ class PygameApp:
                     pygame.mixer.music.load(TITLE_MUSIC)
                     pygame.mixer.music.play(-1)
             elif self.state in self.gamestates:
-                if event.type == MUSIC_END:
+                if event.type == MUSIC_END and not self.combat.get_message_step() == "caught_to_menu":
                     pygame.mixer.music.pause()
                     pygame.mixer.music.unload()
                     pygame.mixer.music.load(BATTLE_MUSIC)
