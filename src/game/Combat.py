@@ -36,6 +36,7 @@ from src.game.CombatDraw import CombatDraw
 from src.game.game_main_text_rendering import draw_text_block
 from src.pyinstaller.data_path import get_data_path
 
+
 class Combat:
     def __init__(self):
         self.__first_run = True
@@ -77,6 +78,8 @@ class Combat:
             "steel": STEEL_SFX,
             "water": WATER_SFX,
         }
+
+        self.__return_state_after_pokedex = "choose_action"
 
     def __get_sfx(self, path):
         if path in self.__sfx_cache:
@@ -217,28 +220,22 @@ class Combat:
 
     def __attack(self, src, dest):
         mult = self.__calculate_attack_mult(self.__attack_type, dest)
-
         before_hp = dest.get_hp()
-
         self.__play_attack_sfx(self.__attack_type, mult)
-
         damage = mult * src.get_attack()
         src.attack(dest, damage)
-
         after_hp = dest.get_hp()
         hp_dealt = int(before_hp - after_hp)
-
         if hp_dealt < 0:
             hp_dealt = 0
-
         return hp_dealt
 
-    def __run(self, pokedex):
+    def __run(self):
         pygame.mixer.music.pause()
         pygame.mixer.music.unload()
         pygame.mixer.Sound(SFX_RUN).play()
         self.music = None
-        self.__end_match(pokedex)
+        self.__set_misc_enemy_state()
         self.__state = "menu"
 
     def __save_ally_to_pokedex(self, pokedex):
@@ -252,7 +249,7 @@ class Combat:
                 pokedex.write_json()
                 break
 
-    def draw(self, screen, font):
+    def draw(self, screen, font, pokedex=None):
         CombatDraw.display_pokemon(self.__ally, self.__enemy, screen, self.__start_timer)
 
         if time.monotonic() - self.__start_timer > 1:
@@ -281,8 +278,11 @@ class Combat:
                 screen.blit(CURSOR, (340, 675))
             elif self.__back_button.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(CURSOR, (340, 725))
+        elif self.__state == "combat_pokedex":
+            if pokedex:
+                pokedex.draw_pokedex(screen, font[1])
 
-    def logic(self, ally, pokedex, escpressed, mouseclicked_left):
+    def logic(self, ally, pokedex, escpressed, mouseclicked_left, mouseclicked_right=False):
         if self.__first_run:
             self.__ally = ally
             self.__first_run = False
@@ -299,8 +299,13 @@ class Combat:
             self.__enemy_sound = os.path.join(POKEMON_SOUND_PATH, f"{self.__enemy.get_id()}.mp3")
             self.__start_timer = time.monotonic()
 
+        if self.__state == "combat_pokedex":
+            s = pokedex.pokedex_logic(True if escpressed else False, "combat_pokedex", mouseclicked_left, mouseclicked_right, return_state=self.__return_state_after_pokedex, in_combat=True)
+            self.__state = s
+            return self.__state
+
         if escpressed:
-            self.__run(pokedex)
+            self.__run()
             return self.__state
 
         if time.monotonic() - self.__start_timer >= 1.0 and self.__enemy_sound:
@@ -357,12 +362,17 @@ class Combat:
                 if mouseclicked_left:
                     pygame.mixer.Sound(SFX_PRESS_AB).play()
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
                     if self.__ack_button.collidepoint(pygame.mouse.get_pos()):
                         self.__state = "choose_attack_type"
                     elif self.__change_pokemon_button.collidepoint(pygame.mouse.get_pos()):
-                        pass
+                        self.__set_misc_enemy_state()
+                        self.__return_state_after_pokedex = "choose_action"
+                        self.__state = "combat_pokedex"
                     else:
-                        self.__run(pokedex)
+                        self.__run()
+
+                    return self.__state
                 else:
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
