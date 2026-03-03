@@ -66,7 +66,7 @@ class PygameApp:
     def draw(self):
         self.screen.fill("white")
         if self.state == "menu":
-            self.menu.menu_rendering(self.screen, self.font)
+            self.menu.menu_rendering(self.screen, self.font, self.can_start())
         if self.state == "pokedex":
             self.pokedex.draw_pokedex(self.screen, self.font[1])
         if self.state in self.gamestates:
@@ -75,12 +75,16 @@ class PygameApp:
         pygame.display.flip()
         self.clock.tick(60)
 
+    def can_start(self):
+        ally = self.pokedex.pokedex_objects[self.pokedex.get_pokemon_id_in_use()]
+        return ally.is_alive()
+
     def logic(self):
         self.changed_state = False
         prev_state = self.state
 
         if self.state == "menu":
-            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state)
+            self.state = self.menu.menu_logic(self.escpressed, self.mouseclicked_left, self.state, self.can_start())
         elif self.state in self.gamestates:
             ally = self.pokedex.pokedex_objects[self.pokedex.get_pokemon_id_in_use()]
             self.state = self.combat.logic(ally, self.pokedex, self.escpressed, self.mouseclicked_left)
