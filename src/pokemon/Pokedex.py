@@ -191,7 +191,6 @@ class Pokedex:
         back_font = pygame.font.Font(self.font_path, 12) 
         back_text = back_font.render("Escape", True, (250, 250, 250))
         screen.blit(back_text, (100, 690))
-        print(pygame.mouse.get_pos())  # FOR DEBUG PURPOSE DO NOT DELETE 
 
 
 
